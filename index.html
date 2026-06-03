@@ -2000,6 +2000,7 @@ document.querySelectorAll('.density-sel button').forEach(btn=>{
 const NAV=[
  {sup:1,name:"Tong quan",sub:"Dashboard",items:[
    {l:"Bang dieu khien",t:"GD_BAOCAO_TIENDO",c:"",key:1,active:1},
+   {l:"Cho toi duyet",t:"SYS_DUYET_INBOX",c:"sys"},
    {l:"Canh bao (cong no, dong tien, chenh mon, vo bao)",t:"SYS_CANHBAO",c:"sys"},
  ]},
  {step:1,name:"Thuong mai — Hop dong & Don hang",sub:"khoi tao lo",items:[
@@ -4996,13 +4997,45 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
   };
   window.SCREEN_META=META; window.FLOW9=FLOW9;
 
-  const apprState=t=>{
-    const s=(t||'').toLowerCase();
-    if(/(huy|xoa)/.test(s)) return {t:'Da huy',c:'s8',lv:0};
-    const done=/(da |hoan thanh|thong quan|hieu luc|hoat dong|^dat$|khop|^du$|da cap|tao moi|duong)/.test(s);
-    if(done) return {t:'GD da duyet',c:'s2',lv:3};
-    return {t:'Cho TP/GD',c:'s4',lv:1};
+  // ---- Ma tran Nguoi thuc hien + Phe duyet (trich tu QT 01-VT & file luan chuyen chung tu) ----
+  // appr = cap phe duyet bat buoc theo file: TP = Truong phong, GD = Giam doc
+  const STEP_ROLE={
+    1:{nguoi:'Ms Ha (KH giao hang) · Ms Trang (don dat hang) — P.XK',appr:['TP','GD']}, // B1, B2.1
+    2:{nguoi:'Phong Mua ban hang · Bo phan Vo bao',appr:[]},                              // phan bo/vo bao (file 2)
+    3:{nguoi:'NV dieu do P.VT (Ha, Viet, A Tung...)',appr:['TP','GD']},                   // B2.2
+    4:{nguoi:'NV giao nhan P.VT (Tu, Lai...) · nha thau VT/boc xep',appr:['TP','GD']},    // B2.3, B3
+    5:{nguoi:'NV giam sat XH Quang Ninh · don vi giam dinh',appr:[]},                     // B4, B5
+    6:{nguoi:'Thu kho',appr:[]},                                                          // BM13-04-03
+    7:{nguoi:'Bo phan Hai quan · P.XK (Ms Trang)',appr:['TP']},                           // file 2 + B6.2
+    8:{nguoi:'Ms Ha — P.VT · Ms Trang — P.XK · Ke toan',appr:['TP','GD']},                // B6, B7
+    9:{nguoi:'P.XK (Ms Trang) · Phong Ke toan',appr:['GD']},                              // B6.3
   };
+  const ROLE_OVR={
+    donhangncc:{nguoi:'Ms Trang — P.XK (don dat hang B2.1)',appr:['TP','GD']},
+    quyettoanhang:{nguoi:'Phong VT (Ms Ha chot ton that) · P.XK (Ms Trang)',appr:['TP']},   // B6.1, B6.2
+    quyettoanvt:{nguoi:'Ms Ha — P.VT (BB thanh quyet toan B7.2)',appr:['TP','GD']},
+    hoadon:{nguoi:'Phong Ke toan',appr:['GD']},                                             // file 2: GD duyet toan bo hoa don
+    congno:{nguoi:'P.XK (Ms Trang) · Phong Ke toan',appr:['GD']},                           // B6.3
+    dntt:{nguoi:'Phong Ke toan',appr:['TP','GD']},
+  };
+  const APPR_LABEL={NV:'Nhan vien',TP:'Truong phong',GD:'Giam doc'};
+  const roleOf=(cfg,meta)=>ROLE_OVR[cfg&&cfg.id]||(meta&&meta.step&&STEP_ROLE[meta.step])||{nguoi:(meta&&meta.dept)||'--',appr:[]};
+  const apprChainStr=appr=>['NV',...appr].map(x=>APPR_LABEL[x]||x).join(' → ');
+  const APPROVED=new WeakSet();
+  const apprState=(row,t)=>{
+    if(row&&APPROVED.has(row)) return 'done';
+    const s=(t||'').toLowerCase();
+    if(/(huy|xoa)/.test(s)) return 'rejected';
+    const done=/(da |hoan thanh|thong quan|hieu luc|hoat dong|^dat$|khop|^du$|da cap|tao moi|duong)/.test(s);
+    return done?'done':'pending';
+  };
+  const apprChip=(state,appr)=>{
+    if(state==='rejected') return {t:'Da huy',c:'s8'};
+    if(!appr.length) return {t:'Khong yeu cau',c:'s1'};
+    if(state==='done') return {t:'Da duyet: '+appr.join('·'),c:'s2'};
+    return {t:'Cho '+appr.join('/'),c:'s4'};
+  };
+  window.__STEP_ROLE=STEP_ROLE; window.__apprChainStr=apprChainStr; window.__apprState=apprState;
   const flowStrip=step=>{
     if(!step) return '';
     return `<div class="m-chain-wrap" style="margin-bottom:14px"><div class="m-chain">`+FLOW9.map((f,i)=>{
@@ -5013,17 +5046,23 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
   window.buildFlowStrip=flowStrip;
 
   // ---- C: modal chi tiet chung (dung lai .modal cua he thong) ----
-  function openGenModal(cfg,row,meta){
+  function openGenModal(cfg,row,meta,refresh){
     const last=cfg.cols.length-1;
-    const ap=apprState(row[last].slice(row[last].indexOf('|')+1));
+    const statusText=row[last].slice(row[last].indexOf('|')+1);
+    const role=roleOf(cfg,meta);
+    const state=apprState(row,statusText);
+    const levels=['NV',...role.appr];
+    const doneCount=state==='rejected'?0:state==='done'?levels.length:1;
     const fields=cfg.cols.map((c,i)=>`<div class="m-field"><div class="m-label">${c}</div><div class="m-value">${i===last?pill(row[i]):row[i]}</div></div>`).join('');
-    const lvl=(n,label)=>{const on=ap.lv>=n,rej=ap.lv===0;return `<div style="flex:1;text-align:center"><div style="width:26px;height:26px;border-radius:50%;margin:0 auto 4px;display:grid;place-items:center;background:${rej?'var(--err2)':on?'var(--ok2)':'var(--bg3)'};color:${rej?'var(--err)':on?'var(--ok)':'var(--ink4)'}"><i class="bi bi-${rej?'x-lg':on?'check-lg':'clock'}"></i></div><div style="font-size:var(--fs3);color:var(--ink3)">${label}</div></div>`;};
-    const appr=meta.step?`<div class="m-section"><div class="m-section-title">Phong ban phu trach &amp; Phe duyet nhieu cap</div>
+    const lvl=(idx,key)=>{const on=state!=='rejected'&&idx<doneCount,rej=state==='rejected'&&idx>0;return `<div style="flex:1;text-align:center;min-width:62px"><div style="width:26px;height:26px;border-radius:50%;margin:0 auto 4px;display:grid;place-items:center;background:${rej?'var(--err2)':on?'var(--ok2)':'var(--bg3)'};color:${rej?'var(--err)':on?'var(--ok)':'var(--ink4)'}"><i class="bi bi-${rej?'x-lg':on?'check-lg':'clock'}"></i></div><div style="font-size:var(--fs3);color:var(--ink3)">${APPR_LABEL[key]||key}</div></div>`;};
+    const apprSec=meta.step?`<div class="m-section"><div class="m-section-title">Nguoi thuc hien &amp; Phe duyet (theo quy trinh)</div>
       <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-        <div style="flex:1 1 180px"><div class="m-chain-label">Phong phu trach</div><div style="font-weight:600;margin-top:2px">${meta.dept||'--'}</div></div>
-        <div style="display:flex;gap:8px;flex:2 1 280px;max-width:360px">${lvl(1,'Nhan vien')}${lvl(2,'Truong phong')}${lvl(3,'Giam doc')}</div>
+        <div style="flex:1 1 220px"><div class="m-chain-label">Nguoi thuc hien</div><div style="font-weight:600;margin-top:2px">${role.nguoi}</div></div>
+        <div style="display:flex;gap:8px;flex:2 1 260px;max-width:400px">${role.appr.length?levels.map((k,i)=>lvl(i,k)).join(''):'<div style="color:var(--ink4);align-self:center">Khong yeu cau phe duyet</div>'}</div>
       </div></div>`:'';
     const chain=meta.step?`<div class="m-section"><div class="m-section-title">Luan chuyen chung tu (click de mo buoc)</div>${flowStrip(meta.step)}</div>`:'';
+    const canApprove=meta.step&&role.appr.length&&state==='pending';
+    const approveBtn=meta.step?(state==='done'?`<button class="m-btn-secondary" disabled style="opacity:.6"><i class="bi bi-check-all"></i> Da duyet</button>`:state==='rejected'?`<button class="m-btn-secondary" disabled style="opacity:.6"><i class="bi bi-x-octagon"></i> Da huy</button>`:`<button class="tbtn m-approve-btn" style="background:var(--ok)"><i class="bi bi-check-lg"></i> Duyet (${role.appr.join('·')})</button>`):'';
     modalOverlay.innerHTML=`
       <div class="modal wide">
         <div class="modal-hd"><div class="m-icon dh"><i class="bi bi-file-earmark-text"></i></div>
@@ -5031,24 +5070,29 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
           <div class="m-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></div></div>
         <div class="modal-bd">
           <div class="m-section"><div class="m-section-title">Thong tin chung tu</div><div class="m-grid">${fields}</div></div>
-          ${appr}${chain}
-          <div class="m-actions"><button class="tbtn" style="background:var(--ok)"><i class="bi bi-check-lg"></i> Duyet</button><button class="m-btn-secondary"><i class="bi bi-pencil"></i> Sua</button><button class="m-btn-secondary"><i class="bi bi-printer"></i> In</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
+          ${apprSec}${chain}
+          <div class="m-actions">${approveBtn}<button class="m-btn-secondary"><i class="bi bi-pencil"></i> Sua</button><button class="m-btn-secondary"><i class="bi bi-printer"></i> In</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
         </div></div>`;
     modalOverlay.classList.add('open'); document.body.style.overflow='hidden';
     modalOverlay.querySelector('.m-close-btn').onclick=closeModal;
     modalOverlay.querySelectorAll('.m-chain-step:not(.active)').forEach(st=>st.addEventListener('click',()=>{closeModal();switchPage(st.dataset.go);}));
+    const ab=modalOverlay.querySelector('.m-approve-btn');
+    if(ab) ab.onclick=()=>{ APPROVED.add(row); if(refresh)refresh(); if(window.refreshApprovalInbox)window.refreshApprovalInbox(); openGenModal(cfg,row,meta,refresh); };
   }
+  window.__openGenModal=openGenModal;
 
   function buildScreen(cfg){
     const sec=document.createElement('div');
     sec.className='page'; sec.setAttribute('data-page',cfg.id);
     const meta=META[cfg.id]||{}; const isTxn=!!meta.step;
+    const role=roleOf(cfg,meta);
     const num=new Set(cfg.num||[]); const last=cfg.cols.length-1;
     const ths=cfg.cols.map((c,i)=>{
       const pd=(isTxn&&i===last)?`<th>Phe duyet</th>`:'';
       return pd+`<th${i===0?' style="padding-left:14px"':i===last?' style="padding-right:14px"':''}>${c}</th>`;
     }).join('');
-    const deptLine=`<div style="margin-top:6px;font-size:var(--fs3);color:var(--ink3)"><i class="bi bi-people"></i> Phong phu trach: <b style="color:var(--ink2)">${meta.dept||'--'}</b>${isTxn?' &nbsp;·&nbsp; <i class="bi bi-diagram-3"></i> Phe duyet: <b style="color:var(--ink2)">NV → TP → GD</b>':''}</div>`;
+    const deptLine=isTxn?`<div style="margin-top:6px;font-size:var(--fs3);color:var(--ink3)"><i class="bi bi-person-badge"></i> Nguoi thuc hien: <b style="color:var(--ink2)">${role.nguoi}</b>${role.appr.length?` &nbsp;·&nbsp; <i class="bi bi-diagram-3"></i> Phe duyet: <b style="color:var(--ink2)">${apprChainStr(role.appr)}</b>`:' &nbsp;·&nbsp; <span style="color:var(--ink4)">Khong yeu cau phe duyet</span>'}</div>`
+      :`<div style="margin-top:6px;font-size:var(--fs3);color:var(--ink3)"><i class="bi bi-people"></i> Phu trach: <b style="color:var(--ink2)">${meta.dept||'--'}</b></div>`;
     sec.innerHTML=`
       <div class="phdr"><div class="left"><div class="eyebrow">${cfg.code} · ${cfg.grp||'GIAO DICH'}</div><h2>${cfg.title}</h2><p class="sub">${cfg.desc||''}</p>${deptLine}</div>
         <div class="right"><button class="tbtn"><i class="bi bi-plus-lg"></i> ${cfg.addBtn||'Tao moi'}</button><div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div><div class="ico" title="Bo loc"><i class="bi bi-funnel"></i></div></div></div>
@@ -5062,23 +5106,27 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     content.appendChild(sec);
     sec.querySelectorAll('.m-chain-step:not(.active)').forEach(st=>st.addEventListener('click',()=>switchPage(st.dataset.go)));
     const tbody=sec.querySelector('.ge-tbody');
+    let curRows=cfg.rows;
+    const refresh=()=>render(curRows);
     const render=rows=>{
+      curRows=rows;
       tbody.innerHTML='';
       rows.forEach(r=>{
         const tr=document.createElement('tr');
-        const ap=apprState(r[last].slice(r[last].indexOf('|')+1));
+        const chip=apprChip(apprState(r,r[last].slice(r[last].indexOf('|')+1)),role.appr);
         tr.innerHTML=r.map((cell,i)=>{
-          const apprCell=(isTxn&&i===last)?`<td><span class="pill ${ap.c}"><span class="d"></span>${ap.t}</span></td>`:'';
+          const apprCell=(isTxn&&i===last)?`<td><span class="pill ${chip.c}"><span class="d"></span>${chip.t}</span></td>`:'';
           return apprCell+(i===0?`<td style="padding-left:14px"><span class="oid">${cell}</span></td>`
             : i===last?`<td style="padding-right:14px">${pill(cell)}</td>`
             : `<td class="${num.has(i)?'vnum':''}">${cell}</td>`);
         }).join('');
-        if(isTxn){tr.style.cursor='pointer';tr.addEventListener('click',()=>openGenModal(cfg,r,meta));}
+        if(isTxn){tr.style.cursor='pointer';tr.addEventListener('click',()=>openGenModal(cfg,r,meta,refresh));}
         tbody.appendChild(tr);
       });
       sec.querySelector('.ge-count').textContent=rows.length+' ban ghi';
       sec.querySelector('.ge-foot').textContent=rows.length+' / '+cfg.rows.length+' ban ghi';
     };
+    if(isTxn){ (window.__TXN=window.__TXN||[]).push({cfg,meta,role,refresh}); }
     render(cfg.rows);
     sec.querySelectorAll('.hd-tabs button').forEach(b=>b.addEventListener('click',()=>{
       sec.querySelectorAll('.hd-tabs button').forEach(x=>x.classList.remove('on'));
@@ -5618,26 +5666,62 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
   }
 })();
 
+// ===== Muc 1: HOP "CHO TOI DUYET" (tong hop chung tu cho phe duyet) =====
+(function(){
+  const TXN=window.__TXN||[]; const content=document.querySelector('.content');
+  const openM=window.__openGenModal; const stOf=window.__apprState;
+  if(!content||!openM||!stOf) return;
+  const pill=s=>{const i=s.indexOf('|');return `<span class="pill ${s.slice(0,i)}"><span class="d"></span>${s.slice(i+1)}</span>`;};
+  const sec=document.createElement('div'); sec.className='page'; sec.setAttribute('data-page','approvalinbox');
+  sec.innerHTML=`
+    <div class="phdr"><div class="left"><div class="eyebrow">SYS_DUYET_INBOX · HE THONG</div><h2>Cho toi duyet</h2><p class="sub">Tong hop chung tu dang cho phe duyet (TP / Giam doc) tu tat ca cac buoc quy trinh. Click de mo va duyet.</p></div>
+      <div class="right"><button class="tbtn ai-refresh"><i class="bi bi-arrow-clockwise"></i> Lam moi</button></div></div>
+    <div class="kpis ai-kpis"></div>
+    <div class="card"><div class="chd"><h3>Danh sach cho duyet</h3><span class="small ai-count"></span></div>
+      <div style="padding:0 4px 4px"><table><thead><tr><th style="padding-left:14px">Ma chung tu</th><th>Buoc / Chung tu</th><th>Nguoi thuc hien</th><th>Cho cap duyet</th><th style="padding-right:14px">Trang thai</th></tr></thead><tbody class="ai-tbody"></tbody></table></div></div>`;
+  content.appendChild(sec);
+  PAGE_MAP['SYS_DUYET_INBOX']='approvalinbox'; CRUMB_MAP['approvalinbox']='CHO TOI DUYET';
+  const collect=()=>{ const out=[]; TXN.forEach(e=>{ if(!e.role.appr.length) return; const last=e.cfg.cols.length-1;
+    e.cfg.rows.forEach(r=>{ if(stOf(r,r[last].slice(r[last].indexOf('|')+1))==='pending') out.push({e,r,last}); }); }); return out; };
+  function build(){
+    const list=collect(); const tb=sec.querySelector('.ai-tbody'); tb.innerHTML='';
+    list.forEach(({e,r,last})=>{
+      const tr=document.createElement('tr'); tr.style.cursor='pointer';
+      tr.innerHTML=`<td style="padding-left:14px"><span class="oid">${r[0]}</span></td><td>Buoc ${e.meta.step} · ${e.cfg.crumb}</td><td>${e.role.nguoi}</td><td><span class="pill s4"><span class="d"></span>Cho ${e.role.appr.join('/')}</span></td><td style="padding-right:14px">${pill(r[last])}</td>`;
+      tr.addEventListener('click',()=>openM(e.cfg,r,e.meta,()=>{ if(e.refresh)e.refresh(); build(); }));
+      tb.appendChild(tr);
+    });
+    sec.querySelector('.ai-count').textContent=list.length+' chung tu';
+    const byLvl=l=>list.filter(x=>x.e.role.appr.includes(l)).length;
+    sec.querySelector('.ai-kpis').innerHTML=[['t','inbox','Tong cho duyet',list.length,''],['a','arrow-up-circle','Cho Truong phong',byLvl('TP'),''],['s','person-check','Cho Giam doc',byLvl('GD'),''],['h','diagram-3','So buoc lien quan',new Set(list.map(x=>x.e.meta.step)).size,'buoc']].map(k=>`<div class="kpi"><div class="top"><div class="ic ${k[0]}"><i class="bi bi-${k[1]}"></i></div><div class="lbl">${k[2]}</div></div><div class="val">${k[3]}${k[4]?`<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">${k[4]}</span>`:''}</div><div class="delta"><span class="chip eq">Hom nay</span></div></div>`).join('');
+  }
+  window.refreshApprovalInbox=build;
+  sec.querySelector('.ai-refresh').onclick=build;
+  build();
+})();
+
 // ===== A+B for ORIGINAL transactional screens (flow strip + phong phu trach) =====
 (function(){
   const fs=window.buildFlowStrip; if(!fs) return;
-  const ORIG={ hopdong:[1,'Phong Mua ban hang / XNK'], phuluc:[1,'Phong Mua ban hang'], donhang:[1,'Phong Mua ban hang'], chitietdonhang:[1,'Phong Mua ban hang'], phanbonhmay:[2,'Phong Van tai'], vobao:[2,'Bo phan Vo bao'], chuyentau:[3,'Phong Van tai'], phieusalan:[3,'Phong VT - Dieu do'], khvcnoidia:[3,'Phong Van tai'] };
-  Object.entries(ORIG).forEach(([pid,m])=>{
+  const SR=window.__STEP_ROLE||{}; const chainStr=window.__apprChainStr||(a=>['NV',...a].join(' → '));
+  const ORIG={ hopdong:1, phuluc:1, donhang:1, chitietdonhang:1, phanbonhmay:2, vobao:2, chuyentau:3, phieusalan:3, khvcnoidia:3 };
+  Object.entries(ORIG).forEach(([pid,step])=>{
     const sec=document.querySelector(`.page[data-page="${pid}"]`); if(!sec) return;
+    const role=SR[step]||{nguoi:'--',appr:[]};
     // dept line in header
     const left=sec.querySelector('.phdr .left');
     if(left && !left.querySelector('.dept-line')){
       const d=document.createElement('div');
       d.className='dept-line';
       d.style.cssText='margin-top:6px;font-size:var(--fs3);color:var(--ink3)';
-      d.innerHTML=`<i class="bi bi-people"></i> Phong phu trach: <b style="color:var(--ink2)">${m[1]}</b> &nbsp;·&nbsp; <i class="bi bi-diagram-3"></i> Phe duyet: <b style="color:var(--ink2)">NV → TP → GD</b>`;
+      d.innerHTML=`<i class="bi bi-person-badge"></i> Nguoi thuc hien: <b style="color:var(--ink2)">${role.nguoi}</b>${role.appr.length?` &nbsp;·&nbsp; <i class="bi bi-diagram-3"></i> Phe duyet: <b style="color:var(--ink2)">${chainStr(role.appr)}</b>`:''}`;
       left.appendChild(d);
     }
     // flow strip after kpis (or after phdr)
     if(!sec.querySelector('.m-chain-wrap')){
       const anchor=sec.querySelector('.kpis')||sec.querySelector('.phdr');
       if(anchor){
-        anchor.insertAdjacentHTML('afterend', fs(m[0]));
+        anchor.insertAdjacentHTML('afterend', fs(step));
         const wrap=anchor.nextElementSibling;
         wrap && wrap.querySelectorAll('.m-chain-step:not(.active)').forEach(st=>st.addEventListener('click',()=>switchPage(st.dataset.go)));
       }
