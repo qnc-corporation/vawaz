@@ -987,8 +987,13 @@ tbody tr:hover{background:var(--bg2)}
         <div class="kpis">
           <div class="kpi">
             <div class="top"><div class="ic h"><i class="bi bi-exclamation-triangle"></i></div><div class="lbl">Canh bao tong</div></div>
-            <div class="val">7</div>
-            <div class="delta"><span class="chip dn">+3</span>so voi tuan truoc · 2 khan cap</div>
+            <div class="val">11</div>
+            <div class="delta"><span class="chip dn">+4</span>so voi tuan truoc · 4 khan cap</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-alarm"></i></div><div class="lbl">Han chot quy trinh</div></div>
+            <div class="val">4 <span style="font-size:12px;color:var(--ink4);font-weight:400">viec</span></div>
+            <div class="delta"><span class="chip dn">2 gap</span>nop thue · HD goc mung 5</div>
           </div>
           <div class="kpi">
             <div class="top"><div class="ic a"><i class="bi bi-cash-stack"></i></div><div class="lbl">Cong no qua han</div></div>
@@ -1011,6 +1016,7 @@ tbody tr:hover{background:var(--bg2)}
           <button class="on" data-tab="congno">Cong no <span class="cnt">3</span></button>
           <button class="cb-amb" data-tab="dongtien">Dong tien <span class="cnt">2</span></button>
           <button class="cb-info" data-tab="chenhmon">Chenh mon <span class="cnt">2</span></button>
+          <button data-tab="deadline">Deadline quy trinh <span class="cnt">4</span></button>
         </div>
 
         <!-- Cong no alerts -->
@@ -1032,6 +1038,13 @@ tbody tr:hover{background:var(--bg2)}
           <div class="cb-card">
             <div class="cb-hd"><h3>Canh bao chenh mon so du</h3><span class="cb-badge" style="background:var(--pri3);color:var(--pri)">2 canh bao</span></div>
             <div class="cb-bd" id="cb-chenhmon-list"></div>
+          </div>
+        </div>
+        <!-- Deadline quy trinh alerts -->
+        <div class="cb-section" id="cb-deadline" style="display:none">
+          <div class="cb-card">
+            <div class="cb-hd"><h3>Canh bao han chot theo quy trinh</h3><span class="cb-badge" style="background:var(--err2);color:var(--err)">4 canh bao</span></div>
+            <div class="cb-bd" id="cb-deadline-list"></div>
           </div>
         </div>
       </div><!-- end page canhbao -->
@@ -2365,6 +2378,12 @@ const CB_DATA={
   chenhmon:[
     {icon:'amb',bi:'arrow-left-right',title:'Chenh mon <b>12.4 trieu</b> giua phieu can va hoa don',desc:'Lo <b>HD-XK-2026-003</b> · Phieu can: 25,200 tan · Hoa don: 24,800 tan · Chenh 400 tan. Can kiem tra lai phieu can.',ago:'2 gio truoc',tag:'GD_PHIEUCAN'},
     {icon:'st',bi:'arrow-left-right',title:'Chenh mon <b>8.6 trieu</b> giua giao hang va thanh toan',desc:'Khach <b>Vinaconex X1</b> · Da giao 28,500 tan · Chi thanh toan cho 26,200 tan. Can doi chieu lai cong no.',ago:'1 ngay truoc',tag:'GD_CONGNO'},
+  ],
+  deadline:[
+    {icon:'hot',bi:'alarm',title:'Nop thue NK truoc khi tau cap cang — <b>con 1 ngay</b>',desc:'To khai NK <b>103xxxxxxx7</b> (DDH-2026-0143) · thue NK+VAT <b>610 trieu</b>. Phai nop <b>truoc khi tau cap cang lam hang</b> (du kien 05/06). Chua co chung tu nop thue.',ago:'30 phut truoc',tag:'GD_THUE_XNK'},
+    {icon:'hot',bi:'calendar-x',title:'Hoa don goc gui KT Thai Binh — <b>han mung 5 (con 2 ngay)</b>',desc:'Con <b>6 lo</b> chua tap hop du hoa don goc gui ve KT Thai Binh truoc <b>ngay 05 thang sau</b> (B6.3). Lo: DH-2026-0316, 0317, 0319...',ago:'1 gio truoc',tag:'GD_HOADON'},
+    {icon:'amb',bi:'clock-history',title:'Chung tu chuyen hang chua ve VP — <b>qua 1 ngay</b>',desc:'Lo <b>LO-2026-016</b> (tau MV Sea Dragon) da chot KL nhung <b>chung tu chuyen hang chua chuyen ve VP ngay hom sau</b> (B5.2). NV giam sat XH QN can ban giao gap.',ago:'3 gio truoc',tag:'GD_THUHOI_CHUNGTU'},
+    {icon:'amb',bi:'calendar-event',title:'Bao cao tuan/thang theo chuyen — <b>den han</b>',desc:'Bao cao hang tuan cho tung chuyen hang/NCC (B6.4, B7.3) den han tong hop. Phong XK & VT chuan bi so lieu.',ago:'5 gio truoc',tag:'RPT_*'},
   ]
 };
 
@@ -2401,6 +2420,7 @@ document.querySelectorAll('#cb-tabs button').forEach(btn=>{
 renderCbAlerts('congno');
 renderCbAlerts('dongtien');
 renderCbAlerts('chenhmon');
+renderCbAlerts('deadline');
 
 // ===== PHU LUC HOP DONG DATA & LOGIC =====
 const PL_DATA={
