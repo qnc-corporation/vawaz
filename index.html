@@ -5107,6 +5107,17 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
   }
   window.__openFormModal=openFormModal;
 
+  // ---- Muc 7: noi chung tu sang buoc ke tiep (quyet toan -> DNTT -> thanh toan; quyet toan vo bao -> hoa don) ----
+  const NEXT_ACT={
+    quyettoanhang:{label:'Lap DNTT thanh toan NCC / nha may',go:'dntt',icon:'file-earmark-plus'},
+    quyettoanvt:{label:'Lap DNTT thanh toan nha thau VC',go:'dntt',icon:'file-earmark-plus'},
+    quyettoanvobao:{label:'De nghi xuat hoa don ban vo bao',go:'denghihoadon',icon:'receipt'},
+    sucotonthat:{label:'Chuyen quyet toan van tai (boi thuong ton that)',go:'quyettoanvt',icon:'truck'},
+    denghihoadon:{label:'Xuat hoa don ban hang',go:'hoadon',icon:'receipt'},
+    dntt:{label:'Lap phieu chi / thanh toan',go:'thanhtoan',icon:'cash-coin'},
+    thuhoicongno:{label:'Lap DNTT / phuong an thu hoi',go:'dntt',icon:'file-earmark-plus'},
+  };
+
   // ---- C: modal chi tiet chung (dung lai .modal cua he thong) ----
   function openGenModal(cfg,row,meta,refresh){
     const last=cfg.cols.length-1;
@@ -5129,6 +5140,8 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     const loBtn=(loCode&&window.openLotDossier)?`<button class="m-btn-secondary m-lo-btn"><i class="bi bi-diagram-3"></i> Ho so lo</button>`:'';
     const tpl=FORM_TEMPLATES[cfg.id];
     const formBtn=tpl?`<button class="m-btn-secondary m-form-btn"><i class="bi bi-file-earmark-ruled"></i> Xem bieu mau</button>`:'';
+    const nx=NEXT_ACT[cfg.id];
+    const nextBtn=nx?`<button class="tbtn m-next-btn" style="background:var(--pri)"><i class="bi bi-${nx.icon}"></i> ${nx.label}</button>`:'';
     modalOverlay.innerHTML=`
       <div class="modal wide">
         <div class="modal-hd"><div class="m-icon dh"><i class="bi bi-file-earmark-text"></i></div>
@@ -5137,7 +5150,7 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
         <div class="modal-bd">
           <div class="m-section"><div class="m-section-title">Thong tin chung tu</div><div class="m-grid">${fields}</div></div>
           ${apprSec}${chain}
-          <div class="m-actions">${approveBtn}${formBtn}${loBtn}<button class="m-btn-secondary"><i class="bi bi-pencil"></i> Sua</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
+          <div class="m-actions">${approveBtn}${nextBtn}${formBtn}${loBtn}<button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
         </div></div>`;
     modalOverlay.classList.add('open'); document.body.style.overflow='hidden';
     modalOverlay.querySelector('.m-close-btn').onclick=closeModal;
@@ -5148,6 +5161,8 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     if(lb) lb.onclick=()=>{ closeModal(); window.openLotDossier(loCode); };
     const fb=modalOverlay.querySelector('.m-form-btn');
     if(fb) fb.onclick=()=>openFormModal(cfg,row,tpl,meta,refresh);
+    const nb=modalOverlay.querySelector('.m-next-btn');
+    if(nb) nb.onclick=()=>{ closeModal(); switchPage(nx.go); };
   }
   window.__openGenModal=openGenModal;
 
