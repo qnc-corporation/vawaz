@@ -2039,6 +2039,7 @@ const NAV=[
    {l:"Phan bo nguon nha may",t:"GD_PHANBO_NHAMAY",c:"",key:1},
    {l:"Ke hoach & dat vo bao (XK)",t:"GD_VOBAO_DAT",c:""},
    {l:"Phan bo / luan chuyen vo bao",t:"GD_VOBAO",c:""},
+   {l:"Vong doi & bo sung vo bao",t:"SYS_VOBAO_LC",c:"",key:1},
  ],count:12},
  {step:3,name:"Ke hoach van chuyen",sub:"sa lan / bo → khu neo",items:[
    {l:"Ke hoach tau me",t:"GD_KH_TAU_ME",c:"",key:1},
@@ -5824,6 +5825,83 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
   sel.addEventListener('change',()=>renderLo(sel.value));
   window.openLotDossier=dh=>{ const lo=LO360.find(l=>l.dh===dh)||LO360[0]; switchPage('hoso360'); sel.value=lo.code; renderLo(lo.code); };
   renderLo(LO360[0].code);
+})();
+
+// ===== Muc 6: VONG DOI VO BAO (dat -> thieu/bo sung -> quyet toan -> hoa don ban vo bao) =====
+(function(){
+  const content=document.querySelector('.content'); if(!content) return;
+  const pill=s=>{const i=s.indexOf('|');return `<span class="pill ${s.slice(0,i)}"><span class="d"></span>${s.slice(i+1)}</span>`;};
+  const kpiHtml=k=>`<div class="kpi"><div class="top"><div class="ic ${k[0]}"><i class="bi bi-${k[1]}"></i></div><div class="lbl">${k[2]}</div></div><div class="val">${k[3]}${k[4]?`<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">${k[4]}</span>`:''}</div><div class="delta"><span class="chip ${k[5]||'eq'}">${k[6]||''}</span></div></div>`;
+  const fmt=n=>n.toLocaleString('en-US');
+  // can = SL vo bao can theo KL dong; cap = da cap/giao NM; dong = da dong tai NM
+  const VBLC=[
+   {dh:'DH-2026-0319',nm:'NM Ha Long',loai:'Vo bao PP 50kg',can:100000,cap:100000,dong:98800,datCode:'VB-DAT-2026-019',qtCode:'QT-VB-2026-0019',hdCode:'HD-VB-00451',status:'s2|Da quyet toan'},
+   {dh:'DH-2026-0318',nm:'NM Bim Son',loai:'Vo bao GI 50kg',can:64000,cap:64000,dong:63200,datCode:'VB-DAT-2026-018',qtCode:'',hdCode:'',bosungFrom:'',status:'s4|Du - dang dong'},
+   {dh:'DH-2026-0316',nm:'NM Mien Bac',loai:'Vo bao PP 50kg',can:160000,cap:140000,dong:120000,datCode:'VB-DAT-2026-016',qtCode:'',hdCode:'',bosungFrom:'NM Ha Long',status:'s8|Thieu - can bo sung'},
+   {dh:'DH-2026-0317',nm:'NM Hoang Long',loai:'Vo bao PP 25kg',can:112000,cap:60000,dong:42000,datCode:'VB-DAT-2026-017',qtCode:'',hdCode:'',bosungFrom:'NM Sai Gon',status:'s8|Thieu - can bo sung'},
+  ];
+  const sec=document.createElement('div'); sec.className='page'; sec.setAttribute('data-page','vobao360');
+  sec.innerHTML=`
+    <div class="phdr"><div class="left"><div class="eyebrow">SYS_VOBAO_LC · GIAO DICH</div><h2>Vong doi vo bao — <b>dat &rarr; bo sung &rarr; quyet toan</b></h2><p class="sub">Theo doi vo bao theo don hang: dat theo mau ma &rarr; cap NM dong goi &rarr; thieu thi luan chuyen/cap bo sung tu NM khac &rarr; quyet toan &rarr; hoa don ban vo bao.</p></div>
+      <div class="right"><button class="tbtn"><i class="bi bi-plus-lg"></i> Tao don dat vo bao</button><div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div></div></div>
+    <div class="kpis vb-kpis"></div>
+    <div class="card"><div class="chd"><h3>Theo doi vo bao theo don hang</h3><span class="small" style="color:var(--ink4)">Click dong de xem vong doi &amp; xu ly bo sung</span></div>
+      <div style="padding:0 4px 4px"><table><thead><tr><th style="padding-left:14px">Don hang</th><th>NM dong goi</th><th>Loai vo bao</th><th>SL can</th><th>Da cap NM</th><th>Da dong</th><th>Thieu / Bo sung</th><th style="padding-right:14px">Trang thai</th></tr></thead><tbody class="vb-tbody"></tbody></table></div></div>`;
+  content.appendChild(sec);
+  PAGE_MAP['SYS_VOBAO_LC']='vobao360'; CRUMB_MAP['vobao360']='VONG DOI VO BAO';
+  const tbody=sec.querySelector('.vb-tbody'); const kbox=sec.querySelector('.vb-kpis');
+
+  function openVbModal(v){
+    const thieu=Math.max(v.can-v.cap,0);
+    const stages=[
+      [1,'Dat vo bao (theo mau ma)',`${v.datCode} · ${v.loai} · ${fmt(v.can)} cai`,'Bo phan Vo bao','s2|Da dat','vobaodat'],
+      [2,'Cap / giao nha may',`${fmt(v.cap)} cai → ${v.nm}`,'Bo phan Vo bao','s2|Da cap','vobao'],
+      [3,'Dong tai nha may',`${fmt(v.dong)} cai`,v.nm,(v.dong>=v.can?'s2|Da dong du':'s4|Dang dong'),null],
+    ];
+    if(thieu>0) stages.push([4,'Thieu &rarr; Luan chuyen / Cap bo sung',`${fmt(thieu)} cai (luan chuyen tu ${v.bosungFrom||'NM khac'})`,'Phong Mua ban hang','s8|Can bo sung','vobao']);
+    stages.push([5,'Quyet toan vo bao',v.qtCode||'(chua quyet toan)','Bo phan Vo bao',(v.qtCode?'s2|Da quyet toan':'s4|Cho quyet toan'),'quyettoanvobao']);
+    stages.push([6,'Hoa don ban vo bao',v.hdCode||'(chua xuat)','Phong Ke toan',(v.hdCode?'s2|Da xuat':'s4|Cho xuat'),'hoadon']);
+    const f=(l,vv)=>`<div class="m-field"><div class="m-label">${l}</div><div class="m-value">${vv}</div></div>`;
+    const stepHtml=stages.map(s=>{
+      const done=s[4].startsWith('s2'),warn=s[4].startsWith('s8');
+      const col=warn?'var(--err2)':done?'var(--ok2)':'var(--acc3)',fg=warn?'var(--err)':done?'var(--ok)':'var(--acc)';
+      const go=s[5]?`<button class="m-btn-secondary vb-go" data-go="${s[5]}" style="flex:0 0 auto"><i class="bi bi-box-arrow-up-right"></i></button>`:'';
+      return `<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)">
+        <div style="flex:0 0 30px"><div style="width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:${col};color:${fg};font-weight:700">${s[0]}</div></div>
+        <div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><b>${s[1]}</b> ${pill(s[4])}</div><div style="font-size:var(--fs2);color:var(--ink2);margin-top:2px">${s[2]}</div><div style="font-size:var(--fs3);color:var(--ink4)"><i class="bi bi-person-badge"></i> ${s[3]}</div></div>
+        ${go}</div>`;
+    }).join('');
+    const bosungBtn=thieu>0?`<button class="tbtn" style="background:var(--acc)"><i class="bi bi-arrow-left-right"></i> Tao lenh luan chuyen/bo sung (${fmt(thieu)} cai)</button>`:'';
+    const loBtn=window.openLotDossier?`<button class="m-btn-secondary vb-lo"><i class="bi bi-diagram-3"></i> Ho so lo</button>`:'';
+    modalOverlay.innerHTML=`
+      <div class="modal wide">
+        <div class="modal-hd"><div class="m-icon dh" style="background:#F3EEFF;color:#7C3AED"><i class="bi bi-bag"></i></div>
+          <div class="m-titles"><div class="m-code">${v.dh}</div><div class="m-sub">Vong doi vo bao · ${v.nm}</div></div>
+          <div class="m-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></div></div>
+        <div class="modal-bd">
+          <div class="m-section"><div class="m-section-title">Tong hop vo bao</div><div class="m-grid">${f('Don hang',v.dh)}${f('NM dong goi',v.nm)}${f('Loai vo bao',v.loai)}${f('SL can',fmt(v.can)+' cai')}${f('Da cap NM',fmt(v.cap)+' cai')}${f('Da dong',fmt(v.dong)+' cai')}${f('Thieu / can bo sung',(thieu>0?'<b style="color:var(--err)">'+fmt(thieu)+' cai</b>':'0'))}${f('Trang thai',pill(v.status))}</div></div>
+          <div class="m-section"><div class="m-section-title">Vong doi chung tu vo bao</div><div>${stepHtml}</div></div>
+          <div class="m-actions">${bosungBtn}${loBtn}<button class="m-btn-secondary"><i class="bi bi-printer"></i> In</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
+        </div></div>`;
+    modalOverlay.classList.add('open'); document.body.style.overflow='hidden';
+    modalOverlay.querySelector('.m-close-btn').onclick=closeModal;
+    modalOverlay.querySelectorAll('.vb-go').forEach(b=>b.addEventListener('click',()=>{closeModal();switchPage(b.dataset.go);}));
+    const lo=modalOverlay.querySelector('.vb-lo'); if(lo)lo.onclick=()=>{closeModal();window.openLotDossier(v.dh);};
+  }
+  function render(){
+    const sumCan=VBLC.reduce((a,v)=>a+v.can,0), sumCap=VBLC.reduce((a,v)=>a+v.cap,0);
+    const sumThieu=VBLC.reduce((a,v)=>a+Math.max(v.can-v.cap,0),0), nThieu=VBLC.filter(v=>v.can-v.cap>0).length;
+    kbox.innerHTML=[['t','bag','SL vo bao can',fmt(sumCan),'cai','eq','theo don hang'],['a','box-seam','Da cap NM',fmt(sumCap),'cai','eq','dong goi'],['h','exclamation-triangle','Thieu - can bo sung',fmt(sumThieu),'cai','dn',nThieu+' don hang'],['s','receipt','Quyet toan / Hoa don',VBLC.filter(v=>v.qtCode).length,'lo','eq','ban vo bao']].map(kpiHtml).join('');
+    tbody.innerHTML='';
+    VBLC.forEach(v=>{
+      const thieu=Math.max(v.can-v.cap,0);
+      const tr=document.createElement('tr'); tr.style.cursor='pointer';
+      tr.innerHTML=`<td style="padding-left:14px"><span class="oid">${v.dh}</span></td><td>${v.nm}</td><td>${v.loai}</td><td class="vnum">${fmt(v.can)}</td><td class="vnum">${fmt(v.cap)}</td><td class="vnum">${fmt(v.dong)}</td><td class="vnum"${thieu>0?' style="color:var(--err);font-weight:600"':''}>${thieu>0?fmt(thieu):'0'}</td><td style="padding-right:14px">${pill(v.status)}</td>`;
+      tr.addEventListener('click',()=>openVbModal(v));
+      tbody.appendChild(tr);
+    });
+  }
+  render();
 })();
 
 // ===== Muc 3: DOI CHIEU CHENH LECH DAU VAO <-> DAU RA =====
