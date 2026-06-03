@@ -5150,7 +5150,7 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
         <div class="modal-bd">
           <div class="m-section"><div class="m-section-title">Thong tin chung tu</div><div class="m-grid">${fields}</div></div>
           ${apprSec}${chain}
-          <div class="m-actions">${approveBtn}${nextBtn}${formBtn}${loBtn}<button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
+          <div class="m-actions">${approveBtn}${nextBtn}${formBtn}${loBtn}<button class="m-btn-secondary m-edit-btn"><i class="bi bi-pencil"></i> Sua</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
         </div></div>`;
     modalOverlay.classList.add('open'); document.body.style.overflow='hidden';
     modalOverlay.querySelector('.m-close-btn').onclick=closeModal;
@@ -5163,8 +5163,39 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     if(fb) fb.onclick=()=>openFormModal(cfg,row,tpl,meta,refresh);
     const nb=modalOverlay.querySelector('.m-next-btn');
     if(nb) nb.onclick=()=>{ closeModal(); switchPage(nx.go); };
+    const eb=modalOverlay.querySelector('.m-edit-btn');
+    if(eb) eb.onclick=()=>openEditModal(cfg,row,meta,refresh);
   }
   window.__openGenModal=openGenModal;
+
+  // ---- Muc 9: form tao/sua chung tu ----
+  function statusCellFromText(t){const s=(t||'').toLowerCase();let c='s2';if(/huy|xoa|qua han|loi|^am|no xau|lech|thieu|vuot/.test(s))c='s8';else if(/cho|dang|chua|sap/.test(s))c='s4';return c+'|'+(t||'Moi');}
+  function openEditModal(cfg,row,meta,after){
+    const last=cfg.cols.length-1; const isEdit=!!row;
+    const inp=i=>{
+      if(i===last){
+        const cur=isEdit?row[i].slice(row[i].indexOf('|')+1):'';
+        const opts=(cfg.statusOpts||[]).map(o=>`<option${o===cur?' selected':''}>${o}</option>`).join('');
+        return `<div style="flex:1 1 240px;min-width:240px"><div style="font-size:var(--fs3);color:var(--ink3);margin-bottom:3px">${cfg.cols[i]}</div><select class="ef" data-i="${i}" style="width:100%;height:34px;border:1px solid var(--line);border-radius:5px;padding:0 8px;background:var(--bg)">${opts||'<option>Moi</option>'}</select></div>`;
+      }
+      const v=isEdit?row[i]:'';
+      return `<div style="flex:1 1 240px;min-width:240px"><div style="font-size:var(--fs3);color:var(--ink3);margin-bottom:3px">${cfg.cols[i]}</div><input class="ef" data-i="${i}" value="${String(v).replace(/"/g,'&quot;')}" style="width:100%;height:34px;border:1px solid var(--line);border-radius:5px;padding:0 10px;background:var(--bg)"></div>`;
+    };
+    modalOverlay.innerHTML=`<div class="modal wide"><div class="modal-hd"><div class="m-icon dh"><i class="bi bi-${isEdit?'pencil-square':'plus-lg'}"></i></div><div class="m-titles"><div class="m-code">${isEdit?row[0]:(cfg.addBtn||'Tao moi')}</div><div class="m-sub">${isEdit?'Sua chung tu':'Tao moi chung tu'} · ${cfg.crumb}</div></div><div class="m-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></div></div>
+      <div class="modal-bd"><div class="m-section"><div class="m-section-title">${isEdit?'Chinh sua thong tin':'Nhap thong tin chung tu'}</div><div style="display:flex;flex-wrap:wrap;gap:12px">${cfg.cols.map((c,i)=>inp(i)).join('')}</div></div>
+        <div class="m-actions"><button class="tbtn m-save-btn" style="background:var(--ok)"><i class="bi bi-check-lg"></i> Luu</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Huy</button></div></div></div>`;
+    modalOverlay.classList.add('open'); document.body.style.overflow='hidden';
+    modalOverlay.querySelector('.m-close-btn').onclick=closeModal;
+    modalOverlay.querySelector('.m-save-btn').onclick=()=>{
+      const vals=[]; modalOverlay.querySelectorAll('.ef').forEach(el=>{vals[+el.dataset.i]=el.value;});
+      const newRow=cfg.cols.map((c,i)=> i===last?statusCellFromText(vals[i]||((cfg.statusOpts||[])[0])||'Moi'):(vals[i]||''));
+      if(isEdit){for(let i=0;i<newRow.length;i++) row[i]=newRow[i];}
+      else {cfg.rows.unshift(newRow);}
+      if(after)after(); if(window.refreshApprovalInbox)window.refreshApprovalInbox();
+      closeModal();
+    };
+  }
+  window.__openEditModal=openEditModal;
 
   function buildScreen(cfg){
     const sec=document.createElement('div');
@@ -5180,7 +5211,7 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
       :`<div style="margin-top:6px;font-size:var(--fs3);color:var(--ink3)"><i class="bi bi-people"></i> Phu trach: <b style="color:var(--ink2)">${meta.dept||'--'}</b></div>`;
     sec.innerHTML=`
       <div class="phdr"><div class="left"><div class="eyebrow">${cfg.code} · ${cfg.grp||'GIAO DICH'}</div><h2>${cfg.title}</h2><p class="sub">${cfg.desc||''}</p>${deptLine}</div>
-        <div class="right"><button class="tbtn"><i class="bi bi-plus-lg"></i> ${cfg.addBtn||'Tao moi'}</button><div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div><div class="ico" title="Bo loc"><i class="bi bi-funnel"></i></div></div></div>
+        <div class="right"><button class="tbtn ge-add"><i class="bi bi-plus-lg"></i> ${cfg.addBtn||'Tao moi'}</button><div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div><div class="ico" title="Bo loc"><i class="bi bi-funnel"></i></div></div></div>
       <div class="kpis">${(cfg.kpis||[]).map(kpiHtml).join('')}</div>
       ${flowStrip(meta.step)}
       <div class="hd-tabs">${cfg.tabs.map((t,i)=>`<button class="${i===0?'on':''}" data-tk="${t[0]}">${t[1]} <span class="cnt">${t[2]}</span></button>`).join('')}</div>
@@ -5191,34 +5222,45 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     content.appendChild(sec);
     sec.querySelectorAll('.m-chain-step:not(.active)').forEach(st=>st.addEventListener('click',()=>switchPage(st.dataset.go)));
     const tbody=sec.querySelector('.ge-tbody');
-    let curRows=cfg.rows;
-    const refresh=()=>render(curRows);
+    const selEl=sec.querySelector('.hd-filters select');
+    const inpEl=sec.querySelector('.hd-filters input');
+    let curTab=(cfg.tabs[0]&&cfg.tabs[0][0])||'all';
+    const stOf=r=>r[last].slice(r[last].indexOf('|')+1);
     const render=rows=>{
-      curRows=rows;
       tbody.innerHTML='';
+      if(!rows.length){ tbody.innerHTML=`<tr><td colspan="${cfg.cols.length+(isTxn?1:0)}" style="padding:18px 14px;color:var(--ink4);text-align:center">Khong co ban ghi phu hop</td></tr>`; }
       rows.forEach(r=>{
         const tr=document.createElement('tr');
-        const chip=apprChip(apprState(r,r[last].slice(r[last].indexOf('|')+1)),role.appr);
+        const chip=apprChip(apprState(r,stOf(r)),role.appr);
         tr.innerHTML=r.map((cell,i)=>{
           const apprCell=(isTxn&&i===last)?`<td><span class="pill ${chip.c}"><span class="d"></span>${chip.t}</span></td>`:'';
           return apprCell+(i===0?`<td style="padding-left:14px"><span class="oid">${cell}</span></td>`
             : i===last?`<td style="padding-right:14px">${pill(cell)}</td>`
             : `<td class="${num.has(i)?'vnum':''}">${cell}</td>`);
         }).join('');
-        if(isTxn){tr.style.cursor='pointer';tr.addEventListener('click',()=>openGenModal(cfg,r,meta,refresh));}
+        if(isTxn){tr.style.cursor='pointer';tr.addEventListener('click',()=>openGenModal(cfg,r,meta,applyFilters));}
         tbody.appendChild(tr);
       });
       sec.querySelector('.ge-count').textContent=rows.length+' ban ghi';
       sec.querySelector('.ge-foot').textContent=rows.length+' / '+cfg.rows.length+' ban ghi';
     };
-    if(isTxn){ (window.__TXN=window.__TXN||[]).push({cfg,meta,role,refresh}); }
-    render(cfg.rows);
+    function applyFilters(){
+      let rows=cfg.rows.slice();
+      if(curTab&&curTab!=='all') rows=rows.filter(r=>stOf(r).toLowerCase().includes(curTab.toLowerCase()));
+      const sv=selEl?selEl.value:''; if(sv&&sv!=='Tat ca') rows=rows.filter(r=>stOf(r)===sv);
+      const q=inpEl?inpEl.value.trim().toLowerCase():''; if(q) rows=rows.filter(r=>r.join(' ').toLowerCase().includes(q));
+      render(rows);
+    }
+    if(isTxn){ (window.__TXN=window.__TXN||[]).push({cfg,meta,role,refresh:applyFilters}); }
+    applyFilters();
     sec.querySelectorAll('.hd-tabs button').forEach(b=>b.addEventListener('click',()=>{
       sec.querySelectorAll('.hd-tabs button').forEach(x=>x.classList.remove('on'));
-      b.classList.add('on');
-      const tk=b.dataset.tk;
-      render(tk==='all'?cfg.rows:cfg.rows.filter(r=>r[last].slice(r[last].indexOf('|')+1).toLowerCase().includes(tk.toLowerCase())));
+      b.classList.add('on'); curTab=b.dataset.tk; applyFilters();
     }));
+    if(selEl) selEl.addEventListener('change',applyFilters);
+    if(inpEl) inpEl.addEventListener('input',applyFilters);
+    const addBtn=sec.querySelector('.ge-add');
+    if(addBtn) addBtn.addEventListener('click',()=>openEditModal(cfg,null,meta,applyFilters));
     PAGE_MAP[cfg.code]=cfg.id; CRUMB_MAP[cfg.id]=cfg.crumb;
   }
 
