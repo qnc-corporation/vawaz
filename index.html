@@ -1187,7 +1187,7 @@ tbody tr:hover{background:var(--bg2)}
           </div>
           <div class="fgroup">
             <label>Chang</label>
-            <select><option>Tat ca</option><option>1 · HD & DH</option><option>2 · Phan bo</option><option>3 · Van chuyen</option><option>4 · Giao nhan</option><option>5 · Lam hang</option><option>6 · Kho & Ton</option><option>7 · Hai quan XNK</option><option>8 · Hoa don & QT</option><option>9 · Cong no</option></select>
+            <select><option>Tat ca</option><option>1 · HD & DH</option><option>2 · Phan bo</option><option>3 · Van chuyen</option><option>4 · Giao nhan</option><option>5 · Lam hang</option><option>6 · Hai quan XNK</option><option>7 · Hoa don & QT</option><option>8 · Cong no</option></select>
           </div>
           <div class="fgroup">
             <label>Khach hang</label>
@@ -2035,18 +2035,14 @@ const NAV=[
    {l:"Dich vu phu tro (san gat...)",t:"GD_DICHVU_PHUTRO",c:""},
    {l:"San luong dong theo ngay",t:"GD_SANLUONG_NGAY",c:""},
  ],current:1,count:9},
- {step:6,name:"Kho & Ton",sub:"nhap–xuat–ton",items:[
-   {l:"Phieu nhap / xuat kho",t:"GD_NHAPXUAT_KHO",c:"",key:1},
-   {l:"Ton kho hang hoa (snapshot)",t:"GD_TONKHO_HANG",c:""},
- ],count:6},
- {step:7,name:"Hai quan & Chung tu XNK",sub:"NK · XK · C/O · ho so",items:[
+ {step:6,name:"Hai quan & Chung tu XNK",sub:"NK · XK · C/O · ho so",items:[
    {l:"To khai hai quan (NK / XK)",t:"GD_TOKHAI_HAIQUAN",c:"",key:1},
    {l:"Thue XNK (nop thue NK / hoan thue XK)",t:"GD_THUE_XNK",c:""},
    {l:"Chung nhan (C/O, Fumi, Phyto...)",t:"GD_CHUNGC_HAN",c:""},
    {l:"Checklist ho so lo hang",t:"GD_CHECKLIST_HOSO",c:""},
    {l:"Tai lieu dinh kem",t:"GD_TAILIEU_DINHKEM",c:""},
  ],count:14},
- {step:8,name:"Hoa don, Quyet toan & Chi phi",sub:"chot gia tri lo",items:[
+ {step:7,name:"Hoa don, Quyet toan & Chi phi",sub:"chot gia tri lo",items:[
    {l:"Quyet toan hang hoa (nha may / NCC)",t:"GD_QUYETTOAN_HANG",c:"",key:1},
    {l:"Quyet toan van tai (nha thau VC)",t:"GD_QUYETTOAN_VT",c:""},
    {l:"Quyet toan vo bao (XK)",t:"GD_QUYETTOAN_VOBAO",c:""},
@@ -2055,7 +2051,7 @@ const NAV=[
    {l:"Hoa don (+ chi tiet)",t:"GD_HOADON",c:"",key:1},
    {l:"Vay / tra hang doi tac",t:"GD_VAYTRA_HANG",c:""},
  ],count:11},
- {step:9,name:"Cong no & Dong tien",sub:"thanh toan · thu hoi",items:[
+ {step:8,name:"Cong no & Dong tien",sub:"thanh toan · thu hoi",items:[
    {l:"De nghi thanh toan (DNTT)",t:"GD_DNTT",c:""},
    {l:"Thanh toan (thu / chi)",t:"GD_THANHTOAN",c:"",key:1},
    {l:"Doi chieu & so cong no",t:"GD_CONGNO",c:"",key:1},
@@ -2117,10 +2113,9 @@ const STAGES=[
  ["3","Van chuyen",18,"8.2 ty",100],
  ["4","Giao nhan",12,"6.0 ty",100],
  ["5","Lam hang",8,"5.6 ty",72,"current"],
- ["6","Kho & Ton",6,"4.8 ty",0],
- ["7","Hai quan XNK",14,"9.1 ty",0],
- ["8","Hoa don & QT",11,"4.2 ty",0],
- ["9","Cong no & tien",9,"2.8 ty",0],
+ ["6","Hai quan XNK",14,"9.1 ty",0],
+ ["7","Hoa don & QT",11,"4.2 ty",0],
+ ["8","Cong no & tien",9,"2.8 ty",0],
 ];
 const flow=document.getElementById('flow');
 STAGES.forEach(s=>{
@@ -2140,10 +2135,9 @@ const PIPE=[
  ["3","Van chuyen",18,"Tren sa lan/tau"],
  ["4","Giao nhan",12,"Nhan tai cang · ban giao"],
  ["5","Lam hang",8,"Xep len tau","current"],
- ["6","Kho & Ton",6,"Nhap/xuat"],
- ["7","Hai quan",14,"Hai quan · C/O"],
- ["8","HDon & QT",11,"Chot gia tri"],
- ["9","Cong no",9,"Thu hoi"],
+ ["6","Hai quan",14,"Hai quan · C/O"],
+ ["7","HDon & QT",11,"Chot gia tri"],
+ ["8","Cong no",9,"Thu hoi"],
 ];
 const max=Math.max(...PIPE.map(p=>p[2]));
 const pipe=document.getElementById('pipeline');
@@ -2165,12 +2159,12 @@ const ORDERS=[
   ["DH-2026-0318","Vinaconex X1","Clinker","Vina","s3","14h","1.8 ty","22 phut"],
   ["DH-2026-0317","Tap doan Hoang Long","Xi mang PCB40","HoangLong","s2","1d 4h","960 tr","1 gio"],
   ["DH-2026-0316","Cty TNHH VLXD Sai Gon","Clinker","SG","s5","","3.1 ty","2 gio"],
-  ["DH-2026-0315","Tong CTy XNK Mien Bac","Thach cao","MienBac","s7","","1.84 ty","3 gio"],
+  ["DH-2026-0315","Tong CTy XNK Mien Bac","Thach cao","MienBac","s6","","1.84 ty","3 gio"],
   ["DH-2026-0314","Cty CP Dau tu Xay dung Ha Noi","Clinker","HaNoi","s6","6h","2.2 ty","5 gio"],
   ["DH-2026-0313","Xi mang Bim Son","Clinker","BimSon","s1","","—","Hom qua"],
-  ["DH-2026-0312","Cty CP Xi mang Ha Long","Clinker","XiLong","s8","tre 18d","680 tr","2 ngay"],
+  ["DH-2026-0312","Cty CP Xi mang Ha Long","Clinker","XiLong","s7","tre 18d","680 tr","2 ngay"],
 ];
-const LABELS=["","HD & DH","Phan bo","Van chuyen","Giao nhan","Lam hang","Kho & Ton","Hai quan XNK","HDon & QT","Cong no"];
+const LABELS=["","HD & DH","Phan bo","Van chuyen","Giao nhan","Lam hang","Hai quan XNK","HDon & QT","Cong no"];
 const PRODS={XiLong:"CL",Vina:"VN",SG:"SG","HoangLong":"HL",MienBac:"MB",HaNoi:"HN",BimSon:"BS"};
 const COLORS={XiLong:"c3",Vina:"c2",SG:"c1","HoangLong":"c4",MienBac:"c5",HaNoi:"c2",BimSon:"c3"};
 const tb=document.getElementById('tbody');
@@ -2480,7 +2474,7 @@ document.querySelectorAll('#pl-tabs button').forEach(btn=>{
 renderPlTable('all');
 
 // ===== DON HANG DATA & LOGIC =====
-const DH_CHANG_NAMES=['','HD & DH','Phan bo','Van chuyen','Giao nhan','Lam hang','Kho & Ton','Hai quan XNK','HDon & QT','Cong no'];
+const DH_CHANG_NAMES=['','HD & DH','Phan bo','Van chuyen','Giao nhan','Lam hang','Hai quan XNK','HDon & QT','Cong no'];
 const DH_DATA={
   all:[],
   xk:[
@@ -2488,53 +2482,53 @@ const DH_DATA={
     ['DH-2026-0318','HD-XK-2026-002','Vinaconex X1','Clinker','3,200 tan','5',1.8,'14h','Dang lam hang','s5'],
     ['DH-2026-0317','HD-XK-2026-003','Tap doan Hoang Long','Xi mang PCB40','2,800 tan','3',0.96,'1d 4h','Dang van chuyen','s2'],
     ['DH-2026-0316','HD-XK-2026-004','Cty TNHH VLXD Sai Gon','Clinker','8,000 tan','1',3.1,'—','Cho phan bo','s5'],
-    ['DH-2026-0315','HD-XK-2026-005','Tong CTy XNK Mien Bac','Thach cao','4,600 tan','7',1.84,'—','Cho chung tu','s7'],
-    ['DH-2026-0314','HD-XK-2026-006','Cty CP Dau tu Xay dung Ha Noi','Clinker','6,000 tan','8',2.2,'6h','Cho quyet toan','s8'],
+    ['DH-2026-0315','HD-XK-2026-005','Tong CTy XNK Mien Bac','Thach cao','4,600 tan','6',1.84,'—','Cho chung tu','s6'],
+    ['DH-2026-0314','HD-XK-2026-006','Cty CP Dau tu Xay dung Ha Noi','Clinker','6,000 tan','7',2.2,'6h','Cho quyet toan','s7'],
     ['DH-2026-0313','HD-XK-2026-007','Xi mang Bim Son','Clinker','3,500 tan','1',1.28,'—','Cho phan bo','s1'],
-    ['DH-2026-0312','HD-XK-2026-001','Cty CP Xi mang Ha Long','Clinker','2,400 tan','9',0.68,'tre 18d','Tre han','s9'],
+    ['DH-2026-0312','HD-XK-2026-001','Cty CP Xi mang Ha Long','Clinker','2,400 tan','8',0.68,'tre 18d','Tre han','s8'],
     ['DH-2026-0311','HD-XK-2026-009','Cty CP Xi mang Ha Long','Thach cao','1,800 tan','5',0.41,'3h','Dang lam hang','s5'],
     ['DH-2026-0310','HD-XK-2026-011','Tap doan Hoang Long','Clinker','9,200 tan','3',3.4,'1d','Dang van chuyen','s2'],
-    ['DH-2026-0309','HD-XK-2026-002','Vinaconex X1','Clinker','4,500 tan','6',1.68,'—','Nhap kho','s2'],
+    ['DH-2026-0309','HD-XK-2026-002','Vinaconex X1','Clinker','4,500 tan','6',1.68,'—','Cho chung tu','s2'],
     ['DH-2026-0308','HD-XK-2026-013','Cty XNK Quang Ninh','Clinker','2,800 tan','3',1.04,'2d','Dang van chuyen','s2'],
     ['DH-2026-0307','HD-XK-2026-003','Tap doan Hoang Long','Clinker','6,400 tan','5',2.38,'12h','Dang lam hang','s5'],
-    ['DH-2026-0306','HD-XK-2026-005','Tong CTy XNK Mien Bac','Thach cao','3,100 tan','8',0.68,'—','Cho quyet toan','s8'],
-    ['DH-2026-0305','HD-XK-2026-007','Xi mang Bim Son','Clinker','2,200 tan','9',0.82,'tre 5d','Tre han','s9'],
-    ['DH-2026-0304','HD-XK-2026-001','Cty CP Xi mang Ha Long','Clinker','5,200 tan','7',1.94,'—','Cho chung tu','s7'],
+    ['DH-2026-0306','HD-XK-2026-005','Tong CTy XNK Mien Bac','Thach cao','3,100 tan','7',0.68,'—','Cho quyet toan','s7'],
+    ['DH-2026-0305','HD-XK-2026-007','Xi mang Bim Son','Clinker','2,200 tan','8',0.82,'tre 5d','Tre han','s8'],
+    ['DH-2026-0304','HD-XK-2026-001','Cty CP Xi mang Ha Long','Clinker','5,200 tan','6',1.94,'—','Cho chung tu','s6'],
     ['DH-2026-0303','HD-XK-2026-011','Tap doan Hoang Long','Clinker','4,000 tan','2',1.48,'4h','Dang phan bo','s2'],
-    ['DH-2026-0302','HD-XK-2026-004','Cty TNHH VLXD Sai Gon','Clinker','3,800 tan','6',1.42,'—','Nhap kho','s2'],
+    ['DH-2026-0302','HD-XK-2026-004','Cty TNHH VLXD Sai Gon','Clinker','3,800 tan','6',1.42,'—','Cho chung tu','s2'],
     ['DH-2026-0301','HD-XK-2026-006','Cty CP Dau tu Xay dung Ha Noi','Clinker','5,500 tan','5',2.06,'10h','Dang lam hang','s5'],
-    ['DH-2026-0300','HD-XK-2026-009','Cty CP Xi mang Ha Long','Thach cao','2,400 tan','9',0.55,'tre 2d','Tre han','s9'],
-    ['DH-2026-0299','HD-XK-2026-013','Cty XNK Quang Ninh','Clinker','1,600 tan','7',0.6,'—','Cho chung tu','s7'],
-    ['DH-2026-0298','HD-XK-2026-012','Cty TNHH VLXD Sai Gon','Xi mang','1,200 tan','9',0.44,'tre 32d','Tre han','s9'],
+    ['DH-2026-0300','HD-XK-2026-009','Cty CP Xi mang Ha Long','Thach cao','2,400 tan','8',0.55,'tre 2d','Tre han','s8'],
+    ['DH-2026-0299','HD-XK-2026-013','Cty XNK Quang Ninh','Clinker','1,600 tan','6',0.6,'—','Cho chung tu','s6'],
+    ['DH-2026-0298','HD-XK-2026-012','Cty TNHH VLXD Sai Gon','Xi mang','1,200 tan','8',0.44,'tre 32d','Tre han','s8'],
   ],
   nd:[
     ['DH-2026-0320','HD-ND-2026-001','Cty CP Xi mang Ha Long','Clinker','12,000 tan','3',4.48,'6h','Dang van chuyen','s2'],
     ['DH-2026-0321','HD-ND-2026-002','Vinaconex X1','Xi mang PCB40','6,500 tan','5',2.08,'1d','Dang lam hang','s5'],
     ['DH-2026-0322','HD-ND-2026-003','Tap doan Hoang Long','Clinker','8,000 tan','2',2.96,'—','Dang phan bo','s2'],
-    ['DH-2026-0323','HD-ND-2026-004','Cty TNHH VLXD Sai Gon','Xi mang','5,000 tan','8',1.5,'—','Cho quyet toan','s8'],
-    ['DH-2026-0324','HD-ND-2026-005','Tong CTy XNK Mien Bac','Clinker','3,800 tan','6',1.42,'3h','Nhap kho','s2'],
+    ['DH-2026-0323','HD-ND-2026-004','Cty TNHH VLXD Sai Gon','Xi mang','5,000 tan','7',1.5,'—','Cho quyet toan','s7'],
+    ['DH-2026-0324','HD-ND-2026-005','Tong CTy XNK Mien Bac','Clinker','3,800 tan','6',1.42,'3h','Cho chung tu','s2'],
     ['DH-2026-0325','HD-ND-2026-007','Xi mang Bim Son','Clinker','10,000 tan','3',3.72,'8h','Dang van chuyen','s2'],
-    ['DH-2026-0326','HD-ND-2026-001','Cty CP Xi mang Ha Long','Xi mang','4,200 tan','7',1.34,'—','Cho chung tu','s7'],
-    ['DH-2026-0327','HD-ND-2026-002','Vinaconex X1','Clinker','5,800 tan','9',2.14,'tre 3d','Tre han','s9'],
+    ['DH-2026-0326','HD-ND-2026-001','Cty CP Xi mang Ha Long','Xi mang','4,200 tan','6',1.34,'—','Cho chung tu','s6'],
+    ['DH-2026-0327','HD-ND-2026-002','Vinaconex X1','Clinker','5,800 tan','8',2.14,'tre 3d','Tre han','s8'],
     ['DH-2026-0328','HD-ND-2026-009','Cty CP Xi mang Ha Long','Xi mang','6,400 tan','5',2.05,'16h','Dang lam hang','s5'],
     ['DH-2026-0329','HD-ND-2026-003','Tap doan Hoang Long','Thach cao','2,200 tan','1',0.52,'—','Cho phan bo','s1'],
-    ['DH-2026-0330','HD-ND-2026-005','Tong CTy XNK Mien Bac','Clinker','4,600 tan','8',1.72,'—','Cho quyet toan','s8'],
-    ['DH-2026-0331','HD-ND-2026-007','Xi mang Bim Son','Clinker','7,200 tan','6',2.68,'—','Nhap kho','s2'],
+    ['DH-2026-0330','HD-ND-2026-005','Tong CTy XNK Mien Bac','Clinker','4,600 tan','7',1.72,'—','Cho quyet toan','s7'],
+    ['DH-2026-0331','HD-ND-2026-007','Xi mang Bim Son','Clinker','7,200 tan','6',2.68,'—','Cho chung tu','s2'],
     ['DH-2026-0332','HD-ND-2026-001','Cty CP Xi mang Ha Long','Clinker','8,500 tan','3',3.16,'2d','Dang van chuyen','s2'],
-    ['DH-2026-0333','HD-ND-2026-002','Vinaconex X1','Xi mang','3,200 tan','7',1.02,'—','Cho chung tu','s7'],
+    ['DH-2026-0333','HD-ND-2026-002','Vinaconex X1','Xi mang','3,200 tan','6',1.02,'—','Cho chung tu','s6'],
     ['DH-2026-0334','HD-ND-2026-011','Tap doan Hoang Long','Thach cao','1,400 tan','2',0.34,'5h','Dang phan bo','s2'],
     ['DH-2026-0335','HD-ND-2026-004','Cty TNHH VLXD Sai Gon','Clinker','4,000 tan','5',1.48,'12h','Dang lam hang','s5'],
-    ['DH-2026-0336','HD-ND-2026-007','Xi mang Bim Son','Xi mang','5,600 tan','9',2.08,'tre 7d','Tre han','s9'],
+    ['DH-2026-0336','HD-ND-2026-007','Xi mang Bim Son','Xi mang','5,600 tan','8',2.08,'tre 7d','Tre han','s8'],
     ['DH-2026-0337','HD-ND-2026-009','Cty CP Xi mang Ha Long','Clinker','3,400 tan','1',1.26,'—','Cho phan bo','s1'],
   ],
   dv:[
     ['DH-2026-0338','HD-DV-2026-001','Cty TNHH Van tai Bien Dong','Van tai bien','1 chuyen','5',0.42,'1d','Dang lam hang','s5'],
     ['DH-2026-0339','HD-DV-2026-002','Cty CP Cang Hai Phong','Dich vu cang','2 thang','3',0.24,'3d','Dang van chuyen','s2'],
-    ['DH-2026-0340','HD-DV-2026-003','Cty TNHH Giao nhan Vinamac','Giao nhan','3 lo','6',0.16,'—','Nhap kho','s2'],
-    ['DH-2026-0341','HD-DV-2026-004','Cty CP Kiem dinh HQ Quang Ninh','Kiem dem','2 lo','7',0.1,'—','Cho chung tu','s7'],
+    ['DH-2026-0340','HD-DV-2026-003','Cty TNHH Giao nhan Vinamac','Giao nhan','3 lo','6',0.16,'—','Cho chung tu','s2'],
+    ['DH-2026-0341','HD-DV-2026-004','Cty CP Kiem dinh HQ Quang Ninh','Kiem dem','2 lo','6',0.1,'—','Cho chung tu','s6'],
     ['DH-2026-0342','HD-DV-2026-001','Cty TNHH Van tai Bien Dong','Cho do mon','1 chuyen','5',0.18,'8h','Dang lam hang','s5'],
-    ['DH-2026-0343','HD-DV-2026-007','Cty TNHH Giao nhan Vinamac','Dich vu phu tro','2 lo','8',0.09,'—','Cho quyet toan','s8'],
-    ['DH-2026-0344','HD-DV-2026-009','Cty TNHH Van tai Bien Dong','Cho do mon','1 chuyen','9',0.18,'tre 4d','Tre han','s9'],
+    ['DH-2026-0343','HD-DV-2026-007','Cty TNHH Giao nhan Vinamac','Dich vu phu tro','2 lo','7',0.09,'—','Cho quyet toan','s7'],
+    ['DH-2026-0344','HD-DV-2026-009','Cty TNHH Van tai Bien Dong','Cho do mon','1 chuyen','8',0.18,'tre 4d','Tre han','s8'],
   ]
 };
 DH_DATA.all=[...DH_DATA.xk,...DH_DATA.nd,...DH_DATA.dv];
@@ -4977,10 +4971,9 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     [3,'Van chuyen','khvcnoidia','truck'],
     [4,'Giao nhan','nhanhangcang','box-arrow-in-down'],
     [5,'Lam hang','domonkiemdem','rulers'],
-    [6,'Kho & Ton','nhapxuatkho','box-seam'],
-    [7,'Hai quan XNK','tokhaihaiquan','file-earmark-ruled'],
-    [8,'Hoa don & QT','quyettoanhang','receipt'],
-    [9,'Cong no & tien','congno','wallet2'],
+    [6,'Hai quan XNK','tokhaihaiquan','file-earmark-ruled'],
+    [7,'Hoa don & QT','quyettoanhang','receipt'],
+    [8,'Cong no & tien','congno','wallet2'],
   ];
   // ---- B: phong ban phu trach theo man hinh ----
   const META={
@@ -4988,10 +4981,9 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     vobaodat:{step:2,dept:'Bo phan Vo bao'},
     nhanhangcang:{step:4,dept:'Phong VT - Giao nhan'}, bangiaosalan:{step:4,dept:'Phong VT - Giao nhan'}, thuhoichungtu:{step:4,dept:'Phong VT - Giao nhan'},
     kiemtraham:{step:5,dept:'Giam sat XH Quang Ninh'}, lamhangtau:{step:5,dept:'Giam sat XH Quang Ninh'}, domonkiemdem:{step:5,dept:'Giam sat XH Quang Ninh'}, sucotonthat:{step:5,dept:'Giam sat XH Quang Ninh'}, dichvuphutro:{step:5,dept:'Phong Van tai'}, sanluongngay:{step:5,dept:'Giam sat XH Quang Ninh'},
-    nhapxuatkho:{step:6,dept:'Thu kho'}, tonkhohang:{step:6,dept:'Thu kho'},
-    tokhaihaiquan:{step:7,dept:'Bo phan Hai quan'}, thuexnk:{step:7,dept:'Bo phan Hai quan'}, chungnhan:{step:7,dept:'Phong XNK'}, checklisthoso:{step:7,dept:'Phong XNK'}, tailieudinhkem:{step:7,dept:'Phong XNK'},
-    quyettoanhang:{step:8,dept:'Phong Mua ban hang'}, quyettoanvt:{step:8,dept:'Phong Van tai'}, quyettoanvobao:{step:8,dept:'Bo phan Vo bao'}, chiphivantai:{step:8,dept:'Phong Van tai'}, denghihoadon:{step:8,dept:'Phong Mua ban hang'}, hoadon:{step:8,dept:'Phong Ke toan'}, vaytrahang:{step:8,dept:'Phong Mua ban hang'},
-    dntt:{step:9,dept:'Phong Ke toan'}, thanhtoan:{step:9,dept:'Phong Ke toan'}, congno:{step:9,dept:'Phong Ke toan'}, thuhoicongno:{step:9,dept:'Phong Mua ban hang'}, soduquy:{step:9,dept:'Phong Ke toan'},
+    tokhaihaiquan:{step:6,dept:'Bo phan Hai quan'}, thuexnk:{step:6,dept:'Bo phan Hai quan'}, chungnhan:{step:6,dept:'Phong XNK'}, checklisthoso:{step:6,dept:'Phong XNK'}, tailieudinhkem:{step:6,dept:'Phong XNK'},
+    quyettoanhang:{step:7,dept:'Phong Mua ban hang'}, quyettoanvt:{step:7,dept:'Phong Van tai'}, quyettoanvobao:{step:7,dept:'Bo phan Vo bao'}, chiphivantai:{step:7,dept:'Phong Van tai'}, denghihoadon:{step:7,dept:'Phong Mua ban hang'}, hoadon:{step:7,dept:'Phong Ke toan'}, vaytrahang:{step:7,dept:'Phong Mua ban hang'},
+    dntt:{step:8,dept:'Phong Ke toan'}, thanhtoan:{step:8,dept:'Phong Ke toan'}, congno:{step:8,dept:'Phong Ke toan'}, thuhoicongno:{step:8,dept:'Phong Mua ban hang'}, soduquy:{step:8,dept:'Phong Ke toan'},
     dmdoitac:{dept:'Phong Kinh doanh'}, dmhanghoa:{dept:'Phong Ke hoach'}, dmvobao:{dept:'Bo phan Vo bao'}, dmtiente:{dept:'Phong Ke toan'}, dmphuongtien:{dept:'Phong Van tai'}, dmdiadiem:{dept:'Phong Van tai'}, dmbanggia:{dept:'Phong Van tai'}, dmtaikhoan:{dept:'Phong Ke toan'},
     sysnguoidung:{dept:'Quan tri he thong'}, sysquyendoitac:{dept:'Quan tri he thong'}, sysduyet:{dept:'Quan tri he thong'}, systracklog:{dept:'Quan tri he thong'},
   };
@@ -5005,10 +4997,9 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     3:{nguoi:'NV dieu do P.VT (Ha, Viet, A Tung...)',appr:['TP','GD']},                   // B2.2
     4:{nguoi:'NV giao nhan P.VT (Tu, Lai...) · nha thau VT/boc xep',appr:['TP','GD']},    // B2.3, B3
     5:{nguoi:'NV giam sat XH Quang Ninh · don vi giam dinh',appr:[]},                     // B4, B5
-    6:{nguoi:'Thu kho',appr:[]},                                                          // BM13-04-03
-    7:{nguoi:'Bo phan Hai quan · P.XK (Ms Trang)',appr:['TP']},                           // file 2 + B6.2
-    8:{nguoi:'Ms Ha — P.VT · Ms Trang — P.XK · Ke toan',appr:['TP','GD']},                // B6, B7
-    9:{nguoi:'P.XK (Ms Trang) · Phong Ke toan',appr:['GD']},                              // B6.3
+    6:{nguoi:'Bo phan Hai quan · P.XK (Ms Trang)',appr:['TP']},                           // file 2 + B6.2
+    7:{nguoi:'Ms Ha — P.VT · Ms Trang — P.XK · Ke toan',appr:['TP','GD']},                // B6, B7
+    8:{nguoi:'P.XK (Ms Trang) · Phong Ke toan',appr:['GD']},                              // B6.3
   };
   const ROLE_OVR={
     donhangncc:{nguoi:'Ms Trang — P.XK (don dat hang B2.1)',appr:['TP','GD']},
@@ -5263,28 +5254,7 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     ['01/06/2026','MV Ocean Star','Clinker','3,420','12,420','48%','4','s2|Dat KH'],
     ['31/05/2026','MV Blue Sky','Xi mang','2,760','9,000','35%','3','s8|Duoi KH'],
    ]},
-  /* ---- B6: kho ---- */
-  {id:'nhapxuatkho',code:'GD_NHAPXUAT_KHO',crumb:'PHIEU NHAP / XUAT KHO',title:'Phieu nhap / xuat kho',desc:'Lap phieu nhap, xuat kho hang hoa gan voi don hang va kho tuong ung.',addBtn:'Tao phieu',
-   kpis:[['t','box-arrow-in-down','Phieu nhap thang','86','phieu','up','+10','so voi T5'],['a','box-arrow-up','Phieu xuat thang','78','phieu','up','+7','so voi T5'],['s','arrow-left-right','Luan chuyen','12,400','tan','up','+6%','so voi T5'],['h','hourglass','Cho duyet','5','phieu','dn','2 kho','can xu ly']],
-   tabs:[['all','Tat ca','164'],['nhap','Nhap','86'],['xuat','Xuat','78']],statusOpts:['Da nhap','Da xuat','Cho duyet'],
-   cols:['Ma phieu','Loai','Kho','San pham','So luong (tan)','Don hang','Ngay','Nguoi lap','Trang thai'],num:[4],
-   rows:[
-    ['PNK-2026-0512','Nhap','Kho HL','Clinker','420','DH-2026-0319','03/06/2026','Thu kho HL','s2|Da nhap'],
-    ['PXK-2026-0498','Xuat','Kho HL','Clinker','380','DH-2026-0318','03/06/2026','Thu kho HL','s2|Da xuat'],
-    ['PNK-2026-0511','Nhap','Kho BS','Clinker','310','DH-2026-0317','02/06/2026','Thu kho BS','s4|Cho duyet'],
-    ['PXK-2026-0497','Xuat','Kho MB','Xi mang','450','DH-2026-0316','02/06/2026','Thu kho MB','s2|Da xuat'],
-   ]},
-  {id:'tonkhohang',code:'GD_TONKHO_HANG',crumb:'TON KHO HANG HOA',title:'Ton kho hang hoa (snapshot)',desc:'Anh chup ton kho theo kho va san pham: dau ky, nhap, xuat, ton cuoi.',addBtn:'Chot ton kho',
-   kpis:[['t','boxes','Tong ton kho','42,800','tan','dn','-4%','so voi dau ky'],['a','building','So kho','5','kho','eq','dang hoat dong',''],['s','exclamation-triangle','Duoi dinh muc','2','SP','dn','can bo sung',''],['h','arrow-repeat','Cap nhat','08:42','','eq','hom nay','snapshot']],
-   tabs:[['all','Tat ca','14'],['du','Du','12'],['thieu','Thieu','2']],statusOpts:['Du','Thieu'],
-   cols:['Kho','San pham','Dau ky','Nhap','Xuat','Ton cuoi','Don vi','Trang thai'],num:[2,3,4,5],
-   rows:[
-    ['Kho HL','Clinker','12,400','3,200','2,800','12,800','tan','s2|Du'],
-    ['Kho BS','Clinker','8,600','2,100','2,400','8,300','tan','s2|Du'],
-    ['Kho MB','Xi mang','3,200','900','2,600','1,500','tan','s8|Thieu'],
-    ['Kho SG','Thach cao','5,400','1,200','900','5,700','tan','s2|Du'],
-   ]},
-  /* ---- B7: hai quan & XNK ---- */
+  /* ---- B6: hai quan & XNK ---- */
   {id:'tokhaihaiquan',code:'GD_TOKHAI_HAIQUAN',crumb:'TO KHAI HAI QUAN',title:'To khai hai quan (NK / XK)',desc:'Lap to khai nhap khau / xuat khau theo quy dinh, theo doi phan luong va thong quan.',addBtn:'Tao to khai',
    kpis:[['t','file-earmark-ruled','To khai thang','58','TK','up','+6','so voi T5'],['a','check2-circle','Da thong quan','49','TK','up','84%','hoan thanh'],['s','exclamation-circle','Luong do/vang','7','TK','dn','can kiem hoa',''],['h','hourglass','Dang xu ly','9','TK','eq','tai chi cuc',''] ],
    tabs:[['all','Tat ca','58'],['thong quan','Thong quan','49'],['dang','Dang xu ly','9']],statusOpts:['Thong quan','Dang xu ly'],
@@ -5335,7 +5305,7 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     ['PackingList_0318.xlsx','Packing list','DH-2026-0318','Ms Ha','96 KB','02/06/2026','s4|Cho duyet'],
     ['Anh_ham_0319.zip','Anh ham hang','DH-2026-0319','NV Giam sat','12 MB','02/06/2026','s4|Cho duyet'],
    ]},
-  /* ---- B8: hoa don, quyet toan ---- */
+  /* ---- B7: hoa don, quyet toan ---- */
   {id:'quyettoanhang',code:'GD_QUYETTOAN_HANG',crumb:'QUYET TOAN HANG HOA',title:'Quyet toan hang hoa (nha may / NCC)',desc:'Doi chieu san luong dau vao - dau ra, chot khoi luong va gia tri quyet toan voi nha may / NCC.',addBtn:'Tao quyet toan',
    kpis:[['t','file-earmark-check','QT thang','22','lo','up','+4','so voi T5'],['a','currency-dollar','Gia tri QT','86.4','ty','up','+7%','so voi T5'],['s','arrow-left-right','Chenh lech','-1.2','ty','dn','tong ton that',''],['h','hourglass','Dang doi chieu','6','lo','eq','voi 3 NCC',''] ],
    tabs:[['all','Tat ca','22'],['da quyet toan','Da quyet toan','16'],['dang doi chieu','Dang doi chieu','6']],statusOpts:['Da quyet toan','Dang doi chieu'],
@@ -5400,7 +5370,7 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     ['VT-2026-0032','NM Bim Son','Clinker','800','300','500','30/05/2026','s8|Con no'],
     ['VT-2026-0031','NM Hoang Long','Xi mang','600','600','0','25/05/2026','s2|Da tra'],
    ]},
-  /* ---- B9: cong no & dong tien ---- */
+  /* ---- B8: cong no & dong tien ---- */
   {id:'dntt',code:'GD_DNTT',crumb:'DE NGHI THANH TOAN (DNTT)',title:'De nghi thanh toan (DNTT)',desc:'Lap de nghi thanh toan cho NCC, nha thau, chi phi; trinh duyet nhieu cap.',addBtn:'Tao DNTT',
    kpis:[['t','file-earmark-text','DNTT thang','72','DN','up','+9','so voi T5'],['a','currency-dollar','Gia tri','64.2','ty','up','+6%','so voi T5'],['s','check2-circle','Da duyet','58','DN','up','81%','hoan thanh'],['h','hourglass','Cho duyet','14','DN','dn','TP/GD','can xu ly']],
    tabs:[['all','Tat ca','72'],['da duyet','Da duyet','58'],['cho','Cho duyet','14']],statusOpts:['Da duyet','Cho duyet'],
