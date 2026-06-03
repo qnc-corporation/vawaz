@@ -2224,12 +2224,7 @@ function switchPage(pageId){
   document.querySelectorAll('.item').forEach(it=>it.classList.remove('active'));
   document.querySelectorAll('.item').forEach(it=>{
     const tag=it.querySelector('.tag');
-    if(tag){
-      const t=tag.textContent.trim();
-      if((pageId==='hopdong'&&(t==='DM_HOPDONG'))||(pageId==='phuluc'&&(t==='DM_PHULUC_HOPDONG'))||(pageId==='donhang'&&(t==='GD_DONHANG'))||(pageId==='chitietdonhang'&&(t==='GD_DONHANG_CHITIET'))||(pageId==='phanbonhmay'&&(t==='GD_PHANBO_NHAMAY'))||(pageId==='vobao'&&(t==='GD_VOBAO'))||(pageId==='chuyentau'&&(t==='GD_KH_TAU_ME'))||(pageId==='phieusalan'&&(t==='GD_DIEUDO_SALAN'))||(pageId==='khvcnoidia'&&(t==='GD_LENH_VC'))||(pageId==='canhbao'&&(t==='SYS_CANHBAO'))||(pageId==='dashboard'&&(t==='GD_BAOCAO_TIENDO'))){
-        it.classList.add('active');
-      }
-    }
+    if(tag && PAGE_MAP[tag.textContent.trim()]===pageId) it.classList.add('active');
   });
   // update breadcrumb
   const crumb=document.getElementById('crumb-page');
@@ -4967,6 +4962,424 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
 // DH table clicks are handled by the listener in the CT section above
 // CT table clicks handled inline via .ct-dh-link data attributes
 
+// ===== AUTO-GENERATED PROCESS SCREENS (B1-B9 coverage) =====
+(function(){
+  const content=document.querySelector('.content');
+  if(!content) return;
+  const kpiHtml=k=>`<div class="kpi"><div class="top"><div class="ic ${k[0]}"><i class="bi bi-${k[1]}"></i></div><div class="lbl">${k[2]}</div></div><div class="val">${k[3]}${k[4]?`<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">${k[4]}</span>`:''}</div><div class="delta"><span class="chip ${k[5]}">${k[6]}</span>${k[7]}</div></div>`;
+  const pill=s=>{const i=s.indexOf('|');return `<span class="pill ${s.slice(0,i)}"><span class="d"></span>${s.slice(i+1)}</span>`;};
+  function buildScreen(cfg){
+    const sec=document.createElement('div');
+    sec.className='page'; sec.setAttribute('data-page',cfg.id);
+    const num=new Set(cfg.num||[]); const last=cfg.cols.length-1;
+    const ths=cfg.cols.map((c,i)=>`<th${i===0?' style="padding-left:14px"':i===last?' style="padding-right:14px"':''}>${c}</th>`).join('');
+    sec.innerHTML=`
+      <div class="phdr"><div class="left"><div class="eyebrow">${cfg.code} · ${cfg.grp||'GIAO DICH'}</div><h2>${cfg.title}</h2><p class="sub">${cfg.desc||''}</p></div>
+        <div class="right"><button class="tbtn"><i class="bi bi-plus-lg"></i> ${cfg.addBtn||'Tao moi'}</button><div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div><div class="ico" title="Bo loc"><i class="bi bi-funnel"></i></div></div></div>
+      <div class="kpis">${(cfg.kpis||[]).map(kpiHtml).join('')}</div>
+      <div class="hd-tabs">${cfg.tabs.map((t,i)=>`<button class="${i===0?'on':''}" data-tk="${t[0]}">${t[1]} <span class="cnt">${t[2]}</span></button>`).join('')}</div>
+      <div class="hd-filters"><div class="fgroup"><label>Trang thai:</label><select><option>Tat ca</option>${(cfg.statusOpts||[]).map(o=>`<option>${o}</option>`).join('')}</select></div><div class="fgroup" style="margin-left:auto"><div class="search" style="max-width:240px"><i class="bi bi-search si"></i><input placeholder="Tim kiem..."></div></div></div>
+      <div class="card"><div class="chd"><h3>${cfg.tableTitle||'Danh sach'}</h3><span class="small ge-count">${cfg.rows.length} ban ghi</span><div class="right"><a class="cardlink">Xuat Excel <i class="bi bi-download"></i></a></div></div>
+        <div style="padding:0 4px 4px"><table><thead><tr>${ths}</tr></thead><tbody class="ge-tbody"></tbody></table></div>
+        <div class="tfoot"><span class="small ge-foot"></span><div class="pg"><button>&lsaquo;</button><button class="on">1</button><button>&rsaquo;</button></div></div></div>`;
+    content.appendChild(sec);
+    const tbody=sec.querySelector('.ge-tbody');
+    const render=rows=>{
+      tbody.innerHTML='';
+      rows.forEach(r=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=r.map((cell,i)=> i===0?`<td style="padding-left:14px"><span class="oid">${cell}</span></td>`
+          : i===last?`<td style="padding-right:14px">${pill(cell)}</td>`
+          : `<td class="${num.has(i)?'vnum':''}">${cell}</td>`).join('');
+        tbody.appendChild(tr);
+      });
+      sec.querySelector('.ge-count').textContent=rows.length+' ban ghi';
+      sec.querySelector('.ge-foot').textContent=rows.length+' / '+cfg.rows.length+' ban ghi';
+    };
+    render(cfg.rows);
+    sec.querySelectorAll('.hd-tabs button').forEach(b=>b.addEventListener('click',()=>{
+      sec.querySelectorAll('.hd-tabs button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      const tk=b.dataset.tk;
+      render(tk==='all'?cfg.rows:cfg.rows.filter(r=>r[last].slice(r[last].indexOf('|')+1).toLowerCase().includes(tk.toLowerCase())));
+    }));
+    PAGE_MAP[cfg.code]=cfg.id; CRUMB_MAP[cfg.id]=cfg.crumb;
+  }
+
+  const S=[
+  /* ---- B1: dau vao / NCC ---- */
+  {id:'hopdongncc',code:'DM_HOPDONG_NCC',crumb:'HOP DONG DAU VAO',title:'Hop dong dau vao — <b>Mua NCC / Nha may</b>',desc:'Hop dong mua hang dau vao voi nha cung cap / nha may, chay song song voi hop dong dau ra.',addBtn:'Tao HD dau vao',grp:'DANH MUC',
+   kpis:[['t','file-earmark-text','Tong HD dau vao','38','HD','up','+4','so voi thang truoc'],['a','currency-dollar','Tong gia tri','196.4','ty','up','+9.1%','so voi T5'],['s','clock-history','Sap het han','4','HD','dn','3 HD','trong 30 ngay'],['h','pen','Cho ky','3','HD','eq','2 NM','· 1 NCC']],
+   tabs:[['all','Tat ca','38'],['hieu luc','Dang hieu luc','29'],['cho ky','Cho ky','3'],['het han','Sap het han','4']],statusOpts:['Dang hieu luc','Cho ky','Sap het han'],
+   cols:['Ma HD','NCC / Nha may','San pham','KL hop dong','Da nhan','Gia tri','Ngay ky','Hieu luc den','Trang thai'],num:[3,4,5],
+   rows:[
+    ['HD-NCC-2026-001','NM Xi mang Ha Long','Clinker','50,000 tan','32,400 tan','17.8 ty','15/03/2026','31/12/2026','s2|Dang hieu luc'],
+    ['HD-NCC-2026-002','NM Xi mang Bim Son','Clinker','30,000 tan','12,800 tan','10.4 ty','20/03/2026','30/11/2026','s2|Dang hieu luc'],
+    ['HD-NCC-2026-003','NM Hoang Long','Xi mang PCB40','25,000 tan','0 tan','8.1 ty','--','--','s4|Cho ky'],
+    ['HD-NCC-2026-004','NCC Thach cao Lao','Thach cao','15,000 tan','9,200 tan','3.0 ty','10/01/2026','30/09/2026','s2|Dang hieu luc'],
+    ['HD-NCC-2026-005','NM Mien Bac','Clinker','35,000 tan','35,000 tan','12.6 ty','05/12/2025','30/06/2026','s5|Sap het han'],
+    ['HD-NCC-2026-006','NM Sai Gon','Xi mang','28,000 tan','0 tan','9.2 ty','--','--','s4|Cho ky'],
+   ]},
+  {id:'donhangncc',code:'GD_DONHANG_NCC',crumb:'DON DAT HANG NCC',title:'Don dat hang NCC — <b>Mua hang dau vao</b>',desc:'Don dat hang gui nha cung cap / nha may theo ke hoach giao hang (Buoc 2.1).',addBtn:'Tao don dat hang',
+   kpis:[['t','cart-plus','Don dat hang','64','DDH','up','+12','thang nay'],['a','currency-dollar','Tong gia tri mua','142.8','ty','up','+8.4%','so voi T5'],['s','hourglass-split','Cho xac nhan','9','DDH','dn','3 NM','cham phan hoi'],['h','truck','Dang giao ve','18','DDH','eq','6 NM','dang van chuyen']],
+   tabs:[['all','Tat ca','64'],['da xac nhan','Da xac nhan','46'],['cho','Cho xac nhan','9'],['dang giao','Dang giao','9']],statusOpts:['Da xac nhan','Cho xac nhan','Dang giao'],
+   cols:['Ma DDH','NCC','San pham','Khoi luong','Don gia','Thanh tien','Ngay dat','Giao den','Trang thai'],num:[3,4,5],
+   rows:[
+    ['DDH-2026-0145','NM Xi mang Ha Long','Clinker','5,000 tan','548,000','2.74 ty','02/06/2026','Cang Cam Pha','s2|Da xac nhan'],
+    ['DDH-2026-0144','NM Bim Son','Clinker','3,200 tan','542,000','1.73 ty','01/06/2026','Cang Cam Pha','s1|Dang giao'],
+    ['DDH-2026-0143','NM Hoang Long','Xi mang PCB40','2,800 tan','1,180,000','3.30 ty','31/05/2026','NM Hoang Long','s4|Cho xac nhan'],
+    ['DDH-2026-0142','NCC Thach cao Lao','Thach cao','4,600 tan','410,000','1.89 ty','30/05/2026','Cang Quang Ninh','s2|Da xac nhan'],
+    ['DDH-2026-0141','NM Mien Bac','Clinker','6,000 tan','536,000','3.22 ty','29/05/2026','Cang Hai Phong','s1|Dang giao'],
+   ]},
+  /* ---- B2: dat vo bao ---- */
+  {id:'vobaodat',code:'GD_VOBAO_DAT',crumb:'KE HOACH & DAT VO BAO',title:'Ke hoach &amp; dat vo bao (XK)',desc:'Dat vo bao theo mau ma, quy cach hop dong xuat khau cho cac nha may san xuat vo bao.',addBtn:'Tao don dat vo bao',
+   kpis:[['t','bag','Don dat vo bao','22','don','up','+5','thang nay'],['a','box-seam','Tong so luong','1.82','trieu','up','+7.2%','so voi T5'],['s','hourglass-split','Dang san xuat','6','don','dn','2 NM','cham tien do'],['h','check2-circle','Da giao NM','12','don','eq','du dong hang','']],
+   tabs:[['all','Tat ca','22'],['da giao','Da giao','12'],['dang san xuat','Dang san xuat','6'],['cho','Cho dat','4']],statusOpts:['Da giao','Dang san xuat','Cho dat'],
+   cols:['Ma dat','Loai vo bao','Quy cach / Mau ma','So luong','NM san xuat','NM dong hang','Ngay can','Trang thai'],num:[3],
+   rows:[
+    ['VB-DAT-2026-031','Vo bao PP','50kg · in 3 mau','120,000','NM Bao bi Tien Phong','NM Ha Long','05/06/2026','s4|Cho dat'],
+    ['VB-DAT-2026-030','Vo bao GI','50kg · KraftPP','80,000','NM Bao bi Viet Tri','NM Bim Son','03/06/2026','s1|Dang san xuat'],
+    ['VB-DAT-2026-029','Vo bao PP','25kg · in 2 mau','60,000','NM Bao bi Tien Phong','NM Hoang Long','01/06/2026','s2|Da giao'],
+    ['VB-DAT-2026-028','Vo bao GI','50kg · valve','100,000','NM Bao bi Viet Tri','NM Mien Bac','30/05/2026','s2|Da giao'],
+   ]},
+  /* ---- B4: giao nhan ---- */
+  {id:'nhanhangcang',code:'GD_NHANHANG_CANG',crumb:'NHAN HANG TAI CANG',title:'Nhan hang tai cang / qua can nha may',desc:'Tiep nhan hang tai cang theo khoi luong qua can nha may, lap phieu nhan hang (Buoc 3.1).',addBtn:'Tao phieu nhan',
+   kpis:[['t','box-arrow-in-down','Phieu nhan hom nay','23','phieu','up','+5','so voi hom qua'],['a','truck','Phuong tien','41','luot','eq','12 xe','dang cho'],['s','speedometer2','KL qua can','12,480','tan','up','+8.6%','so voi hom qua'],['h','hourglass','Dang nhan','8','phieu','dn','2 cang','dang lam']],
+   tabs:[['all','Tat ca','23'],['da nhan','Da nhan','15'],['dang nhan','Dang nhan','8']],statusOpts:['Da nhan','Dang nhan'],
+   cols:['Ma phieu','Don hang','San pham','Phuong tien','KL qua can (tan)','Cang / NM','Ngay nhan','Trang thai'],num:[4],
+   rows:[
+    ['PN-2026-0782','DH-2026-0319','Clinker','30C-451.88','420','Cang Cam Pha','03/06/2026','s2|Da nhan'],
+    ['PN-2026-0781','DH-2026-0318','Clinker','29H-112.04','380','NM Ha Long','03/06/2026','s2|Da nhan'],
+    ['PN-2026-0780','DH-2026-0317','Xi mang PCB40','30C-778.21','310','NM Hoang Long','03/06/2026','s1|Dang nhan'],
+    ['PN-2026-0779','DH-2026-0316','Clinker','15B-330.19','450','Cang Quang Ninh','02/06/2026','s1|Dang nhan'],
+   ]},
+  {id:'bangiaosalan',code:'GD_BANGIAO_SALAN',crumb:'BAN GIAO SA LAN',title:'Ban giao sa lan — <b>niem chi · BB giao nhan</b>',desc:'Kep chi sa lan, chup anh ham hang, lap phieu giao hang va bien ban giao nhan cho sa lan (Buoc 3.3).',addBtn:'Tao ban giao',
+   kpis:[['t','file-earmark-check','Ban giao hom nay','17','sa lan','up','+3','so voi hom qua'],['a','shield-lock','Niem chi','34','niem','eq','2 niem/sa lan',''],['s','images','Co anh ham hang','15','/17','up','88%','da chup'],['h','hourglass','Cho ban giao','4','sa lan','dn','dang xep','']],
+   tabs:[['all','Tat ca','17'],['da ban giao','Da ban giao','13'],['cho','Cho ban giao','4']],statusOpts:['Da ban giao','Cho ban giao'],
+   cols:['Ma ban giao','Sa lan','So niem chi','San pham','KL (tan)','BB giao nhan','Ngay','Trang thai'],num:[4],
+   rows:[
+    ['BG-2026-0455','SL-Truong Thanh 06','NC-88213 / NC-88214','Clinker','1,200','Da ky','03/06/2026','s2|Da ban giao'],
+    ['BG-2026-0454','SL-Hoang Ha 12','NC-88210 / NC-88211','Clinker','980','Da ky','03/06/2026','s2|Da ban giao'],
+    ['BG-2026-0453','SL-Minh Phu 03','NC-88208','Xi mang','760','Chua ky','02/06/2026','s4|Cho ban giao'],
+    ['BG-2026-0452','SL-Truong Thanh 09','NC-88205 / NC-88206','Clinker','1,100','Da ky','02/06/2026','s2|Da ban giao'],
+   ]},
+  {id:'thuhoichungtu',code:'GD_THUHOI_CHUNGTU',crumb:'THU HOI CHUNG TU',title:'Thu hoi chung tu',desc:'Thu hoi phieu can cang/nha may, hoa don do, bang ke khoi luong qua can ve van phong (Buoc 3.4).',addBtn:'Tao phieu thu hoi',
+   kpis:[['t','arrow-return-left','Thu hoi hom nay','29','chung tu','up','+6','so voi hom qua'],['a','file-earmark-text','Phieu can','18','phieu','eq','da ve VP',''],['s','receipt','Hoa don do','7','HD','dn','3 thieu','chua ve'],['h','exclamation-triangle','Con thieu','5','chung tu','dn','can doc thuc','']],
+   tabs:[['all','Tat ca','29'],['da thu hoi','Da thu hoi','24'],['con thieu','Con thieu','5']],statusOpts:['Da thu hoi','Con thieu'],
+   cols:['Ma thu hoi','Loai chung tu','Don hang / Lo','Sa lan / Xe','Nguoi thu hoi','Ngay','Trang thai'],num:[],
+   rows:[
+    ['TH-2026-0611','Phieu can cang','DH-2026-0319','SL-Truong Thanh 06','NV Lai','03/06/2026','s2|Da thu hoi'],
+    ['TH-2026-0610','Hoa don do','DH-2026-0318','30C-451.88','NV Tu','03/06/2026','s2|Da thu hoi'],
+    ['TH-2026-0609','Bang ke qua can','DH-2026-0317','SL-Minh Phu 03','NV Lai','02/06/2026','s8|Con thieu'],
+    ['TH-2026-0608','Phieu can nha may','DH-2026-0316','29H-112.04','NV Tu','02/06/2026','s2|Da thu hoi'],
+   ]},
+  /* ---- B5: lam hang ---- */
+  {id:'kiemtraham',code:'GD_KIEMTRA_HAM',crumb:'KIEM TRA / DANH TAY HAM',title:'Kiem tra / danh tay ham',desc:'Kiem tra don vi danh tay ham hang da sach truoc khi xuat hang len tau (Buoc 4.1).',addBtn:'Tao phieu kiem tra',
+   kpis:[['t','clipboard-check','Kiem tra hom nay','12','ham','up','+2','so voi hom qua'],['a','check2-circle','Dat','9','ham','up','75%','da sach'],['s','x-circle','Chua dat','3','ham','dn','can ve sinh lai',''],['h','people','Giam sat','5','NV','eq','dang truc',''] ],
+   tabs:[['all','Tat ca','12'],['dat','Dat','9'],['chua dat','Chua dat','3']],statusOpts:['Dat','Chua dat'],
+   cols:['Ma kiem tra','Tau bien','Ham so','Ket qua','Nguoi kiem tra','Ngay','Trang thai'],num:[],
+   rows:[
+    ['KT-2026-0233','MV Ocean Star','Ham 1','Sach','NV Giam sat QN','03/06/2026','s2|Dat'],
+    ['KT-2026-0232','MV Ocean Star','Ham 2','Con bui','NV Giam sat QN','03/06/2026','s8|Chua dat'],
+    ['KT-2026-0231','MV Blue Sky','Ham 1','Sach','NV Giam sat QN','02/06/2026','s2|Dat'],
+    ['KT-2026-0230','MV Blue Sky','Ham 3','Sach','NV Giam sat QN','02/06/2026','s2|Dat'],
+   ]},
+  {id:'lamhangtau',code:'GD_LAMHANG_TAU',crumb:'TIME SHEET (NOR / LAYTIME)',title:'Time sheet (NOR / laytime)',desc:'Theo doi thoi gian lam hang: NOR, bat dau/ket thuc xep, laytime, demurrage/despatch.',addBtn:'Tao time sheet',
+   kpis:[['t','clock','Tau dang xep','3','tau','eq','tai QN',''],['a','hourglass-split','Laytime con','42','gio','dn','2 tau gan han',''],['s','cash-coin','Demurrage du kien','-180','tr','dn','1 tau tre','rui ro'],['h','check2-circle','Hoan thanh thang','8','tau','up','+2','so voi T5']],
+   tabs:[['all','Tat ca','11'],['dang xep','Dang xep','3'],['hoan thanh','Hoan thanh','8']],statusOpts:['Dang xep','Hoan thanh'],
+   cols:['Ma lo xuat','Tau bien','NOR tendered','Bat dau xep','Ket thuc','Laytime','Demurrage/Despatch','Trang thai'],num:[],
+   rows:[
+    ['LX-2026-0091','MV Ocean Star','01/06 08:00','01/06 14:00','--','72h','--','s1|Dang xep'],
+    ['LX-2026-0090','MV Blue Sky','31/05 06:00','31/05 10:00','02/06 18:00','96h','+64 tr despatch','s2|Hoan thanh'],
+    ['LX-2026-0089','MV Sea Dragon','29/05 09:00','29/05 15:00','01/06 20:00','72h','-180 tr demurrage','s2|Hoan thanh'],
+   ]},
+  {id:'domonkiemdem',code:'GD_DOMON_KIEMDEM',crumb:'DO MON & KIEM DEM',title:'Do mon &amp; kiem dem',desc:'Do mon nuoc (clinker) va kiem dem (xi mang) khi xuat hang tu sa lan len tau bien (Buoc 4.2).',addBtn:'Tao bien ban',
+   kpis:[['t','rulers','Do mon hom nay','9','lo','up','+2','so voi hom qua'],['a','speedometer2','KL chot','8,640','tan','up','+6.1%','so voi hom qua'],['s','arrow-left-right','Chenh lech','-42','tan','dn','2 lo lech','can kiem tra'],['h','check2-circle','Khop','7','/9','up','78%','trong nguong']],
+   tabs:[['all','Tat ca','9'],['khop','Khop','7'],['chenh lech','Chenh lech','2']],statusOpts:['Khop','Chenh lech'],
+   cols:['Ma lo xuat','Tau / Sa lan','San pham','Mon truoc','Mon sau','KL do mon (tan)','KL kiem dem (tan)','Chenh lech','Trang thai'],num:[5,6,7],
+   rows:[
+    ['LX-2026-0091','SL-Truong Thanh 06','Clinker','1.82 m','3.04 m','1,205','--','+5','s2|Khop'],
+    ['LX-2026-0091','SL-Hoang Ha 12','Clinker','1.78 m','2.66 m','978','--','-2','s2|Khop'],
+    ['LX-2026-0090','SL-Minh Phu 03','Xi mang','--','--','--','758','-22','s8|Chenh lech'],
+    ['LX-2026-0090','SL-Truong Thanh 09','Clinker','1.80 m','2.92 m','1,096','--','-20','s8|Chenh lech'],
+   ]},
+  {id:'sucotonthat',code:'GD_SUCO_TONTHAT',crumb:'BAO RACH VO · SU CO & TON THAT',title:'Bao rach vo · Su co &amp; ton that',desc:'Kiem soat bao rach vo, lap bien ban xac nhan khoi luong ton that tung sa lan de thanh quyet toan.',addBtn:'Tao bien ban su co',
+   kpis:[['t','exclamation-triangle','Su co thang','14','vu','dn','+3','so voi T5'],['a','box','Bao rach','312','bao','dn','+45','so voi T5'],['s','graph-down','KL ton that','18.6','tan','dn','0.21%','tren tong'],['h','cash-stack','Gia tri ton that','-148','tr','dn','dang doi tru','NCC/VC']],
+   tabs:[['all','Tat ca','14'],['dang xu ly','Dang xu ly','6'],['da xu ly','Da xu ly','8']],statusOpts:['Dang xu ly','Da xu ly'],
+   cols:['Ma su co','Lo / Sa lan','Loai su co','So bao rach','KL ton that (tan)','Gia tri','Don vi chiu','Ngay','Trang thai'],num:[3,4,5],
+   rows:[
+    ['SC-2026-0077','SL-Minh Phu 03','Bao rach vo','120','3.0','-24 tr','Nha thau VC','02/06/2026','s4|Dang xu ly'],
+    ['SC-2026-0076','SL-Hoang Ha 12','Roi vai khi xuc','--','2.4','-19 tr','Don vi xuc dao','01/06/2026','s2|Da xu ly'],
+    ['SC-2026-0075','SL-Truong Thanh 09','Bao rach vo','95','2.1','-17 tr','Nha thau VC','01/06/2026','s2|Da xu ly'],
+    ['SC-2026-0074','MV Ocean Star','Am uot ham','--','5.2','-42 tr','Bao hiem','31/05/2026','s4|Dang xu ly'],
+   ]},
+  {id:'dichvuphutro',code:'GD_DICHVU_PHUTRO',crumb:'DICH VU PHU TRO',title:'Dich vu phu tro (san gat, xuc dao...)',desc:'Quan ly cac dich vu phu tro trong qua trinh lam hang: san gat, xuc dao, ho tro xep hang.',addBtn:'Tao yeu cau DV',
+   kpis:[['t','tools','DV thang nay','26','lan','up','+4','so voi T5'],['a','currency-dollar','Chi phi DV','-642','tr','dn','+8%','so voi T5'],['s','hourglass','Dang thuc hien','5','DV','eq','tai 2 tau',''],['h','check2-circle','Da nghiem thu','21','DV','up','81%','hoan thanh']],
+   tabs:[['all','Tat ca','26'],['da nghiem thu','Da nghiem thu','21'],['dang','Dang thuc hien','5']],statusOpts:['Da nghiem thu','Dang thuc hien'],
+   cols:['Ma DV','Loai dich vu','Don vi cung cap','Khoi luong','Don gia','Thanh tien','Lo lien quan','Trang thai'],num:[3,4,5],
+   rows:[
+    ['DV-2026-0188','San gat ham','Cty San gat Quang Ninh','1,200 tan','18,000','21.6 tr','LX-2026-0091','s2|Da nghiem thu'],
+    ['DV-2026-0187','Xuc dao','Cty Co gioi Cam Pha','980 tan','22,000','21.6 tr','LX-2026-0091','s1|Dang thuc hien'],
+    ['DV-2026-0186','Ho tro xep','Nha thau boc xep HL','760 tan','15,000','11.4 tr','LX-2026-0090','s2|Da nghiem thu'],
+   ]},
+  {id:'sanluongngay',code:'GD_SANLUONG_NGAY',crumb:'SAN LUONG DONG THEO NGAY',title:'San luong dong theo ngay',desc:'Theo doi san luong dong hang theo ngay cho tung tau, luy ke va tien do so voi ke hoach.',addBtn:'Nhap san luong',
+   kpis:[['t','calendar-check','Hom nay','3,240','tan','up','+12%','so voi hom qua'],['a','bar-chart','Luy ke tau','18,640','tan','up','72%','ke hoach'],['s','clock-history','So ngay con','2','ngay','eq','du kien xong',''],['h','speedometer','Toc do TB','3,100','tan/ngay','up','+5%','so voi KH']],
+   tabs:[['all','Tat ca','12'],['dat','Dat KH','8'],['duoi','Duoi KH','4']],statusOpts:['Dat KH','Duoi KH'],
+   cols:['Ngay','Tau bien','San pham','KL dong (tan)','Luy ke (tan)','% KH','So sa lan','Trang thai'],num:[3,4,5,6],
+   rows:[
+    ['03/06/2026','MV Ocean Star','Clinker','3,240','18,640','72%','4','s2|Dat KH'],
+    ['02/06/2026','MV Ocean Star','Clinker','2,980','15,400','60%','3','s8|Duoi KH'],
+    ['01/06/2026','MV Ocean Star','Clinker','3,420','12,420','48%','4','s2|Dat KH'],
+    ['31/05/2026','MV Blue Sky','Xi mang','2,760','9,000','35%','3','s8|Duoi KH'],
+   ]},
+  /* ---- B6: kho ---- */
+  {id:'nhapxuatkho',code:'GD_NHAPXUAT_KHO',crumb:'PHIEU NHAP / XUAT KHO',title:'Phieu nhap / xuat kho',desc:'Lap phieu nhap, xuat kho hang hoa gan voi don hang va kho tuong ung.',addBtn:'Tao phieu',
+   kpis:[['t','box-arrow-in-down','Phieu nhap thang','86','phieu','up','+10','so voi T5'],['a','box-arrow-up','Phieu xuat thang','78','phieu','up','+7','so voi T5'],['s','arrow-left-right','Luan chuyen','12,400','tan','up','+6%','so voi T5'],['h','hourglass','Cho duyet','5','phieu','dn','2 kho','can xu ly']],
+   tabs:[['all','Tat ca','164'],['nhap','Nhap','86'],['xuat','Xuat','78']],statusOpts:['Da nhap','Da xuat','Cho duyet'],
+   cols:['Ma phieu','Loai','Kho','San pham','So luong (tan)','Don hang','Ngay','Nguoi lap','Trang thai'],num:[4],
+   rows:[
+    ['PNK-2026-0512','Nhap','Kho HL','Clinker','420','DH-2026-0319','03/06/2026','Thu kho HL','s2|Da nhap'],
+    ['PXK-2026-0498','Xuat','Kho HL','Clinker','380','DH-2026-0318','03/06/2026','Thu kho HL','s2|Da xuat'],
+    ['PNK-2026-0511','Nhap','Kho BS','Clinker','310','DH-2026-0317','02/06/2026','Thu kho BS','s4|Cho duyet'],
+    ['PXK-2026-0497','Xuat','Kho MB','Xi mang','450','DH-2026-0316','02/06/2026','Thu kho MB','s2|Da xuat'],
+   ]},
+  {id:'tonkhohang',code:'GD_TONKHO_HANG',crumb:'TON KHO HANG HOA',title:'Ton kho hang hoa (snapshot)',desc:'Anh chup ton kho theo kho va san pham: dau ky, nhap, xuat, ton cuoi.',addBtn:'Chot ton kho',
+   kpis:[['t','boxes','Tong ton kho','42,800','tan','dn','-4%','so voi dau ky'],['a','building','So kho','5','kho','eq','dang hoat dong',''],['s','exclamation-triangle','Duoi dinh muc','2','SP','dn','can bo sung',''],['h','arrow-repeat','Cap nhat','08:42','','eq','hom nay','snapshot']],
+   tabs:[['all','Tat ca','14'],['du','Du','12'],['thieu','Thieu','2']],statusOpts:['Du','Thieu'],
+   cols:['Kho','San pham','Dau ky','Nhap','Xuat','Ton cuoi','Don vi','Trang thai'],num:[2,3,4,5],
+   rows:[
+    ['Kho HL','Clinker','12,400','3,200','2,800','12,800','tan','s2|Du'],
+    ['Kho BS','Clinker','8,600','2,100','2,400','8,300','tan','s2|Du'],
+    ['Kho MB','Xi mang','3,200','900','2,600','1,500','tan','s8|Thieu'],
+    ['Kho SG','Thach cao','5,400','1,200','900','5,700','tan','s2|Du'],
+   ]},
+  /* ---- B7: hai quan & XNK ---- */
+  {id:'tokhaihaiquan',code:'GD_TOKHAI_HAIQUAN',crumb:'TO KHAI HAI QUAN',title:'To khai hai quan (NK / XK)',desc:'Lap to khai nhap khau / xuat khau theo quy dinh, theo doi phan luong va thong quan.',addBtn:'Tao to khai',
+   kpis:[['t','file-earmark-ruled','To khai thang','58','TK','up','+6','so voi T5'],['a','check2-circle','Da thong quan','49','TK','up','84%','hoan thanh'],['s','exclamation-circle','Luong do/vang','7','TK','dn','can kiem hoa',''],['h','hourglass','Dang xu ly','9','TK','eq','tai chi cuc',''] ],
+   tabs:[['all','Tat ca','58'],['thong quan','Thong quan','49'],['dang','Dang xu ly','9']],statusOpts:['Thong quan','Dang xu ly'],
+   cols:['So to khai','Loai','Don hang','San pham','KL (tan)','Tri gia','Ngay dang ky','Phan luong','Trang thai'],num:[4,5],
+   rows:[
+    ['105xxxxxxx1','XK','DH-2026-0319','Clinker','5,000','2.4 ty','02/06/2026','Xanh','s2|Thong quan'],
+    ['105xxxxxxx2','XK','DH-2026-0318','Clinker','3,200','1.8 ty','02/06/2026','Vang','s1|Dang xu ly'],
+    ['103xxxxxxx7','NK','DDH-2026-0143','Thach cao','4,600','1.9 ty','01/06/2026','Do','s1|Dang xu ly'],
+    ['105xxxxxxx3','XK','DH-2026-0316','Clinker','8,000','3.1 ty','31/05/2026','Xanh','s2|Thong quan'],
+   ]},
+  {id:'thuexnk',code:'GD_THUE_XNK',crumb:'THUE XNK',title:'Thue XNK (nop thue NK / hoan thue XK)',desc:'Quan ly nghia vu thue NK, hoan thue XK; lap de nghi nop thue truoc khi tau cap cang.',addBtn:'Tao de nghi thue',
+   kpis:[['t','receipt','Phai nop thang','3.84','ty','dn','+0.4 ty','so voi T5'],['a','check2-circle','Da nop','2.96','ty','up','77%','hoan thanh'],['s','arrow-counterclockwise','Hoan thue XK','1.24','ty','up','3 ho so','dang xu ly'],['h','calendar-event','Den han','2','khoan','dn','trong 5 ngay','']],
+   tabs:[['all','Tat ca','16'],['da nop','Da nop','11'],['cho','Cho nop','5']],statusOpts:['Da nop','Cho nop'],
+   cols:['Ma','Loai thue','To khai','So tien','Han nop','Ngay nop','Don hang','Trang thai'],num:[3],
+   rows:[
+    ['T-2026-0091','Thue NK','103xxxxxxx7','420 tr','05/06/2026','--','DDH-2026-0143','s4|Cho nop'],
+    ['T-2026-0090','VAT NK','103xxxxxxx7','190 tr','05/06/2026','--','DDH-2026-0143','s4|Cho nop'],
+    ['T-2026-0089','Hoan thue XK','105xxxxxxx1','-380 tr','--','--','DH-2026-0319','s1|Dang xu ly'],
+    ['T-2026-0088','Thue NK','103xxxxxxx5','310 tr','28/05/2026','27/05/2026','DDH-2026-0140','s2|Da nop'],
+   ]},
+  {id:'chungnhan',code:'GD_CHUNGC_HAN',crumb:'CHUNG NHAN (C/O...)',title:'Chung nhan (C/O, Fumi, Phyto...)',desc:'Theo doi cap cac chung nhan xuat xu (C/O), hun trung (Fumi), kiem dich (Phyto) cho lo hang.',addBtn:'Tao ho so chung nhan',
+   kpis:[['t','patch-check','Ho so thang','34','HS','up','+5','so voi T5'],['a','check2-circle','Da cap','27','HS','up','79%','hoan thanh'],['s','hourglass','Dang xu ly','7','HS','eq','tai co quan',''],['h','exclamation-circle','Gan han tau','3','HS','dn','can gap','']],
+   tabs:[['all','Tat ca','34'],['da cap','Da cap','27'],['dang','Dang xu ly','7']],statusOpts:['Da cap','Dang xu ly'],
+   cols:['Ma','Loai chung nhan','Don hang','Co quan cap','Ngay nop','Ngay cap','Trang thai'],num:[],
+   rows:[
+    ['CO-2026-0142','C/O form E','DH-2026-0319','VCCI','02/06/2026','03/06/2026','s2|Da cap'],
+    ['FU-2026-0091','Fumigation','DH-2026-0319','Cty Hun trung VN','02/06/2026','--','s1|Dang xu ly'],
+    ['CO-2026-0141','C/O form D','DH-2026-0316','VCCI','31/05/2026','01/06/2026','s2|Da cap'],
+    ['PH-2026-0033','Phytosanitary','DH-2026-0315','Chi cuc KD','30/05/2026','--','s1|Dang xu ly'],
+   ]},
+  {id:'checklisthoso',code:'GD_CHECKLIST_HOSO',crumb:'CHECKLIST HO SO LO HANG',title:'Checklist ho so lo hang',desc:'Kiem tra do day du ho so chung tu cho tung lo hang truoc khi quyet toan / cap C/O.',addBtn:'Tao checklist',
+   kpis:[['t','list-check','Lo dang theo doi','12','lo','eq','dang mo',''],['a','check2-all','Day du ho so','8','lo','up','67%','san sang QT'],['s','exclamation-triangle','Con thieu','4','lo','dn','can bo sung',''],['h','percent','TB hoan thanh','86','%','up','+4%','so voi T5']],
+   tabs:[['all','Tat ca','12'],['day du','Day du','8'],['con thieu','Con thieu','4']],statusOpts:['Day du','Con thieu'],
+   cols:['Lo hang','Don hang','So muc','Da co','Con thieu','% hoan thanh','Trang thai'],num:[2,3,4,5],
+   rows:[
+    ['LO-XK-019','DH-2026-0319','14','14','0','100%','s2|Day du'],
+    ['LO-XK-018','DH-2026-0318','14','12','2','86%','s8|Con thieu'],
+    ['LO-XK-017','DH-2026-0317','14','14','0','100%','s2|Day du'],
+    ['LO-XK-016','DH-2026-0316','14','9','5','64%','s8|Con thieu'],
+   ]},
+  {id:'tailieudinhkem',code:'GD_TAILIEU_DINHKEM',crumb:'TAI LIEU DINH KEM',title:'Tai lieu dinh kem',desc:'Kho tai lieu, chung tu scan dinh kem theo lo hang / don hang.',addBtn:'Tai len tai lieu',
+   kpis:[['t','folder','Tai lieu','248','file','up','+22','thang nay'],['a','hdd','Dung luong','1.4','GB','up','+120MB','thang nay'],['s','check2-circle','Da duyet','214','file','up','86%','hoan thanh'],['h','hourglass','Cho duyet','34','file','eq','2 nguoi',''] ],
+   tabs:[['all','Tat ca','248'],['da duyet','Da duyet','214'],['cho','Cho duyet','34']],statusOpts:['Da duyet','Cho duyet'],
+   cols:['Ten tai lieu','Loai','Lo / Don hang','Nguoi tai len','Dung luong','Ngay','Trang thai'],num:[],
+   rows:[
+    ['BL_DH0319.pdf','Bill of Lading','DH-2026-0319','Ms Trang','420 KB','03/06/2026','s2|Da duyet'],
+    ['Invoice_DH0319.pdf','Hoa don TM','DH-2026-0319','Ms Trang','180 KB','03/06/2026','s2|Da duyet'],
+    ['PackingList_0318.xlsx','Packing list','DH-2026-0318','Ms Ha','96 KB','02/06/2026','s4|Cho duyet'],
+    ['Anh_ham_0319.zip','Anh ham hang','DH-2026-0319','NV Giam sat','12 MB','02/06/2026','s4|Cho duyet'],
+   ]},
+  /* ---- B8: hoa don, quyet toan ---- */
+  {id:'quyettoanhang',code:'GD_QUYETTOAN_HANG',crumb:'QUYET TOAN HANG HOA',title:'Quyet toan hang hoa (nha may / NCC)',desc:'Doi chieu san luong dau vao - dau ra, chot khoi luong va gia tri quyet toan voi nha may / NCC.',addBtn:'Tao quyet toan',
+   kpis:[['t','file-earmark-check','QT thang','22','lo','up','+4','so voi T5'],['a','currency-dollar','Gia tri QT','86.4','ty','up','+7%','so voi T5'],['s','arrow-left-right','Chenh lech','-1.2','ty','dn','tong ton that',''],['h','hourglass','Dang doi chieu','6','lo','eq','voi 3 NCC',''] ],
+   tabs:[['all','Tat ca','22'],['da quyet toan','Da quyet toan','16'],['dang doi chieu','Dang doi chieu','6']],statusOpts:['Da quyet toan','Dang doi chieu'],
+   cols:['Ma QT','Doi tac (NM/NCC)','Lo hang','KL dau vao','KL dau ra','Chenh lech','Gia tri QT','Trang thai'],num:[3,4,5,6],
+   rows:[
+    ['QT-H-2026-0061','NM Xi mang Ha Long','LO-XK-019','5,000','4,980','-20','2.40 ty','s2|Da quyet toan'],
+    ['QT-H-2026-0060','NM Bim Son','LO-XK-018','3,200','3,176','-24','1.72 ty','s4|Dang doi chieu'],
+    ['QT-H-2026-0059','NCC Thach cao Lao','LO-XK-017','4,600','4,580','-20','1.88 ty','s2|Da quyet toan'],
+    ['QT-H-2026-0058','NM Mien Bac','LO-XK-016','6,000','5,948','-52','3.18 ty','s4|Dang doi chieu'],
+   ]},
+  {id:'quyettoanvt',code:'GD_QUYETTOAN_VT',crumb:'QUYET TOAN VAN TAI',title:'Quyet toan van tai (nha thau VC)',desc:'Lap bien ban thanh quyet toan khoi luong, boi thuong ton that va de nghi thanh toan cho nha thau VC.',addBtn:'Tao quyet toan VT',
+   kpis:[['t','truck','QT van tai thang','19','BB','up','+3','so voi T5'],['a','currency-dollar','Chi phi VC','-12.8','ty','dn','+6%','so voi T5'],['s','dash-circle','Boi thuong tru','-186','tr','dn','ton that hang',''],['h','hourglass','Cho duyet','5','BB','eq','TP/GD',''] ],
+   tabs:[['all','Tat ca','19'],['da quyet toan','Da quyet toan','14'],['cho','Cho duyet','5']],statusOpts:['Da quyet toan','Cho duyet'],
+   cols:['Ma QT','Nha thau VC','Tuyen','KL VC (tan)','Don gia','Thanh tien','Boi thuong','Trang thai'],num:[3,4,5,6],
+   rows:[
+    ['QT-VT-2026-0044','SL Truong Thanh','Cam Pha - QN','1,205','62,000','74.7 tr','-12 tr','s2|Da quyet toan'],
+    ['QT-VT-2026-0043','SL Hoang Ha','Hai Phong - QN','978','68,000','66.5 tr','0','s4|Cho duyet'],
+    ['QT-VT-2026-0042','VT Bien Dong','QN - Da Nang','2,400','185,000','444 tr','-42 tr','s2|Da quyet toan'],
+   ]},
+  {id:'quyettoanvobao',code:'GD_QUYETTOAN_VOBAO',crumb:'QUYET TOAN VO BAO',title:'Quyet toan vo bao (XK)',desc:'Quyet toan vo bao cua tau xuat khau, lap de nghi xuat hoa don ban vo bao.',addBtn:'Tao quyet toan vo bao',
+   kpis:[['t','bag-check','QT vo bao thang','8','tau','up','+2','so voi T5'],['a','box-seam','SL quyet toan','640','nghin','up','+5%','so voi T5'],['s','arrow-left-right','Chenh lech','-3,200','cai','dn','hao hut',''],['h','hourglass','Dang doi chieu','3','tau','eq','voi NM',''] ],
+   tabs:[['all','Tat ca','8'],['da quyet toan','Da quyet toan','5'],['dang doi chieu','Dang doi chieu','3']],statusOpts:['Da quyet toan','Dang doi chieu'],
+   cols:['Ma QT','Tau XK','Loai vo bao','SL cap','SL dong','Chenh lech','Gia tri','Trang thai'],num:[3,4,5],
+   rows:[
+    ['QT-VB-2026-0019','MV Ocean Star','Vo bao PP','120,000','118,800','-1,200','648 tr','s2|Da quyet toan'],
+    ['QT-VB-2026-0018','MV Blue Sky','Vo bao GI','80,000','79,200','-800','456 tr','s4|Dang doi chieu'],
+    ['QT-VB-2026-0017','MV Sea Dragon','Vo bao PP','100,000','98,800','-1,200','540 tr','s2|Da quyet toan'],
+   ]},
+  {id:'chiphivantai',code:'GD_CHIPHI_VANTAI',crumb:'CHI PHI / PHAT SINH',title:'Chi phi / phat sinh (phat, boi thuong BH)',desc:'Theo doi chi phi van tai va cac khoan phat sinh: phat thoi gian, boi thuong bao hiem.',addBtn:'Tao chi phi',
+   kpis:[['t','wallet2','Chi phi thang','-14.2','ty','dn','+8%','so voi T5'],['a','exclamation-octagon','Phat phat sinh','-320','tr','dn','3 vu','tre thoi gian'],['s','shield-check','Boi thuong BH','+180','tr','up','1 vu','dang doi'],['h','hourglass','Cho duyet','6','khoan','eq','TP/GD',''] ],
+   tabs:[['all','Tat ca','28'],['da duyet','Da duyet','22'],['cho','Cho duyet','6']],statusOpts:['Da duyet','Cho duyet'],
+   cols:['Ma chi phi','Loai','Lo / Tuyen','So tien','Phat / Boi thuong','Doi tac','Ngay','Trang thai'],num:[3,4],
+   rows:[
+    ['CP-2026-0231','Cuoc sa lan','Cam Pha - QN','-74.7 tr','--','SL Truong Thanh','02/06/2026','s2|Da duyet'],
+    ['CP-2026-0230','Phat laytime','MV Sea Dragon','-180 tr','Phat','Chu tau','01/06/2026','s4|Cho duyet'],
+    ['CP-2026-0229','Boi thuong BH','SL Minh Phu 03','+180 tr','Boi thuong','Bao hiem PVI','31/05/2026','s1|Dang doi'],
+   ]},
+  {id:'denghihoadon',code:'GD_DENGHI_HOADON',crumb:'DE NGHI XUAT HOA DON',title:'De nghi xuat hoa don',desc:'Lap de nghi xuat hoa don ban hang sau khi quyet toan lo hang voi nha may va khach hang.',addBtn:'Tao de nghi',
+   kpis:[['t','file-earmark-plus','De nghi thang','41','DN','up','+6','so voi T5'],['a','currency-dollar','Gia tri','92.4','ty','up','+7%','so voi T5'],['s','check2-circle','Da xuat HD','33','DN','up','80%','hoan thanh'],['h','hourglass','Cho xuat','8','DN','eq','KT xu ly',''] ],
+   tabs:[['all','Tat ca','41'],['da xuat','Da xuat','33'],['cho xuat','Cho xuat','8']],statusOpts:['Da xuat','Cho xuat'],
+   cols:['Ma DN','Don hang','Khach hang','Noi dung','Gia tri','Nguoi de nghi','Ngay','Trang thai'],num:[4],
+   rows:[
+    ['DN-2026-0312','DH-2026-0319','Cty CP Xi mang Ha Long','Ban Clinker lo 019','2.40 ty','Ms Trang','03/06/2026','s4|Cho xuat'],
+    ['DN-2026-0311','DH-2026-0318','Vinaconex X1','Ban Clinker lo 018','1.72 ty','Ms Trang','03/06/2026','s2|Da xuat'],
+    ['DN-2026-0310','DH-2026-0316','Cty TNHH VLXD Sai Gon','Ban Clinker lo 016','3.18 ty','Ms Ha','02/06/2026','s2|Da xuat'],
+   ]},
+  {id:'hoadon',code:'GD_HOADON',crumb:'HOA DON',title:'Hoa don (+ chi tiet)',desc:'Quan ly hoa don ban hang da phat hanh, doi chieu voi de nghi va quyet toan.',addBtn:'Xuat hoa don',
+   kpis:[['t','receipt','Hoa don thang','156','HD','up','+14','so voi T5'],['a','currency-dollar','Doanh thu','248.6','ty','up','+11%','so voi T5'],['s','percent','VAT dau ra','24.8','ty','up','+1.1 ty','so voi T5'],['h','hourglass','Cho phat hanh','8','HD','eq','dang ky so',''] ],
+   tabs:[['all','Tat ca','156'],['da phat hanh','Da phat hanh','148'],['cho','Cho phat hanh','8']],statusOpts:['Da phat hanh','Cho phat hanh'],
+   cols:['So hoa don','Don hang','Khach hang','Tien hang','VAT','Tong cong','Ngay xuat','Trang thai'],num:[3,4,5],
+   rows:[
+    ['00012845','DH-2026-0318','Vinaconex X1','1.72 ty','172 tr','1.89 ty','03/06/2026','s2|Da phat hanh'],
+    ['00012844','DH-2026-0316','Cty TNHH VLXD Sai Gon','3.18 ty','318 tr','3.50 ty','02/06/2026','s2|Da phat hanh'],
+    ['--','DH-2026-0319','Cty CP Xi mang Ha Long','2.40 ty','240 tr','2.64 ty','--','s4|Cho phat hanh'],
+   ]},
+  {id:'vaytrahang',code:'GD_VAYTRA_HANG',crumb:'VAY / TRA HANG DOI TAC',title:'Vay / tra hang doi tac',desc:'Theo doi cong no hang hoa: vay hang va tra hang doi voi cac doi tac, nha may.',addBtn:'Tao phieu vay/tra',
+   kpis:[['t','arrow-left-right','Giao dich thang','18','phieu','eq','6 doi tac',''],['a','box-arrow-down','Dang vay','2,400','tan','dn','3 doi tac',''],['s','box-arrow-up','Phai tra','1,800','tan','dn','can can doi',''],['h','exclamation-triangle','Qua han tra','1','phieu','dn','can xu ly','']],
+   tabs:[['all','Tat ca','18'],['da tra','Da tra','12'],['con no','Con no','6']],statusOpts:['Da tra','Con no'],
+   cols:['Ma','Doi tac','San pham','KL vay (tan)','KL tra (tan)','Con lai (tan)','Ngay','Trang thai'],num:[3,4,5],
+   rows:[
+    ['VT-2026-0033','NM Ha Long','Clinker','1,200','1,200','0','28/05/2026','s2|Da tra'],
+    ['VT-2026-0032','NM Bim Son','Clinker','800','300','500','30/05/2026','s8|Con no'],
+    ['VT-2026-0031','NM Hoang Long','Xi mang','600','600','0','25/05/2026','s2|Da tra'],
+   ]},
+  /* ---- B9: cong no & dong tien ---- */
+  {id:'dntt',code:'GD_DNTT',crumb:'DE NGHI THANH TOAN (DNTT)',title:'De nghi thanh toan (DNTT)',desc:'Lap de nghi thanh toan cho NCC, nha thau, chi phi; trinh duyet nhieu cap.',addBtn:'Tao DNTT',
+   kpis:[['t','file-earmark-text','DNTT thang','72','DN','up','+9','so voi T5'],['a','currency-dollar','Gia tri','64.2','ty','up','+6%','so voi T5'],['s','check2-circle','Da duyet','58','DN','up','81%','hoan thanh'],['h','hourglass','Cho duyet','14','DN','dn','TP/GD','can xu ly']],
+   tabs:[['all','Tat ca','72'],['da duyet','Da duyet','58'],['cho','Cho duyet','14']],statusOpts:['Da duyet','Cho duyet'],
+   cols:['Ma DNTT','Doi tac','Noi dung','So tien','Han TT','Nguoi de nghi','Duyet','Trang thai'],num:[3],
+   rows:[
+    ['DNTT-2026-0488','NM Ha Long','Mua Clinker DDH-0145','2.74 ty','08/06/2026','Ms Trang','GD','s2|Da duyet'],
+    ['DNTT-2026-0487','SL Truong Thanh','Cuoc VC QT-VT-0044','74.7 tr','06/06/2026','Ms Ha','TP','s4|Cho duyet'],
+    ['DNTT-2026-0486','Bao bi Tien Phong','Vo bao VB-DAT-031','648 tr','10/06/2026','NV Vo bao','GD','s4|Cho duyet'],
+   ]},
+  {id:'thanhtoan',code:'GD_THANHTOAN',crumb:'THANH TOAN (THU / CHI)',title:'Thanh toan (thu / chi)',desc:'Ghi nhan cac giao dich thu / chi gan voi tai khoan ngan hang va quy.',addBtn:'Tao phieu thu/chi',
+   kpis:[['t','arrow-down-circle','Thu thang','186.4','ty','up','+12%','so voi T5'],['a','arrow-up-circle','Chi thang','142.8','ty','dn','+7%','so voi T5'],['s','wallet2','Dong tien rong','+43.6','ty','up','duong','an toan'],['h','hourglass','Cho hach toan','7','phieu','eq','KT xu ly',''] ],
+   tabs:[['all','Tat ca','248'],['thu','Thu','132'],['chi','Chi','116']],statusOpts:['Da hach toan','Cho hach toan'],
+   cols:['Ma phieu','Loai','Doi tac','So tien','Tai khoan / Quy','Ngay','Chung tu','Trang thai'],num:[3],
+   rows:[
+    ['PT-2026-0921','Thu','Vinaconex X1','1.89 ty','VCB - 0451','03/06/2026','HD 00012845','s2|Da hach toan'],
+    ['PC-2026-0640','Chi','NM Ha Long','2.74 ty','VCB - 0451','03/06/2026','DNTT-0488','s2|Da hach toan'],
+    ['PT-2026-0920','Thu','Cty TNHH VLXD Sai Gon','3.50 ty','BIDV - 7782','02/06/2026','HD 00012844','s4|Cho hach toan'],
+   ]},
+  {id:'congno',code:'GD_CONGNO',crumb:'DOI CHIEU & SO CONG NO',title:'Doi chieu &amp; so cong no',desc:'So cong no phai thu / phai tra theo doi tac, doi chieu theo dieu khoan hop dong.',addBtn:'Tao bien ban doi chieu',
+   kpis:[['t','arrow-down-left','Phai thu','86.4','ty','dn','-4%','so voi T5'],['a','arrow-up-right','Phai tra','62.8','ty','dn','-2%','so voi T5'],['s','exclamation-triangle','Qua han','8.2','ty','dn','5 doi tac','rui ro'],['h','people','Doi tac','42','ben','eq','dang theo doi',''] ],
+   tabs:[['all','Tat ca','42'],['phai thu','Phai thu','24'],['phai tra','Phai tra','18']],statusOpts:['Phai thu','Phai tra'],
+   cols:['Doi tac','Loai','Dau ky','Phat sinh','Da TT','Con lai','Qua han','Trang thai'],num:[2,3,4,5],
+   rows:[
+    ['Cty CP Xi mang Ha Long','Phai thu','12.4 ty','8.2 ty','14.0 ty','6.6 ty','680 tr','s4|Phai thu'],
+    ['Vinaconex X1','Phai thu','4.2 ty','6.8 ty','9.1 ty','1.9 ty','0','s2|Phai thu'],
+    ['NM Ha Long','Phai tra','8.6 ty','12.4 ty','15.2 ty','5.8 ty','0','s4|Phai tra'],
+    ['SL Truong Thanh','Phai tra','1.2 ty','3.4 ty','3.4 ty','1.2 ty','0','s4|Phai tra'],
+   ]},
+  {id:'thuhoicongno',code:'GD_THUHOI_CONGNO',crumb:'THEO DOI & THU HOI CONG NO',title:'Theo doi &amp; thu hoi cong no',desc:'Theo doi han thanh toan, doc thuc thu hoi; tong hop ho so no xau de trinh phuong an.',addBtn:'Ghi nhan nhac no',
+   kpis:[['t','exclamation-triangle','Qua han','8.2','ty','dn','5 don','can doc thuc'],['a','clock-history','Sap den han','4.6','ty','dn','3 don','trong 7 ngay'],['s','telephone','Da nhac no','12','luot','eq','tuan nay',''],['h','x-octagon','No xau','1','don','dn','680 tr','trinh GD']],
+   tabs:[['all','Tat ca','12'],['qua han','Qua han','5'],['trong han','Trong han','7']],statusOpts:['Qua han','Trong han'],
+   cols:['Don hang','Khach hang','So tien','Han TT','Qua han (ngay)','Lan nhac','Nguy co','Trang thai'],num:[2,4,5],
+   rows:[
+    ['DH-2026-0312','Cty CP Xi mang Ha Long','680 tr','16/05/2026','18','2','Cao','s8|Qua han'],
+    ['DH-2026-0298','Cty TNHH VLXD Sai Gon','1.24 ty','02/05/2026','32','3','No xau','s8|Qua han'],
+    ['DH-2026-0315','Tong CTy XNK Mien Bac','1.84 ty','06/06/2026','-3','0','Thap','s4|Trong han'],
+    ['DH-2026-0319','Cty CP Xi mang Ha Long','2.64 ty','13/06/2026','-10','0','Thap','s2|Trong han'],
+   ]},
+  {id:'soduquy',code:'GD_SODU_QUY',crumb:'SO DU QUY / DONG TIEN',title:'So du quy / dong tien',desc:'Theo doi so du cac quy va tai khoan ngan hang, dong tien thu/chi trong ky.',addBtn:'Dieu chuyen quy',
+   kpis:[['t','bank','Tong so du','38.4','ty','up','+3.2 ty','so voi dau ky'],['a','arrow-down-circle','Thu trong ky','186.4','ty','up','+12%','so voi T5'],['s','arrow-up-circle','Chi trong ky','142.8','ty','dn','+7%','so voi T5'],['h','exclamation-triangle','Quy am','1','quy','dn','-540 tr','can bo sung']],
+   tabs:[['all','Tat ca','7'],['duong','Duong','6'],['am','Am','1']],statusOpts:['Duong','Am'],
+   cols:['Quy / Tai khoan','Loai','Dau ky','Thu','Chi','So du','Cap nhat','Trang thai'],num:[2,3,4,5],
+   rows:[
+    ['VCB - 0451','Ngan hang','18.2 ty','86.4 ty','78.2 ty','26.4 ty','08:42','s2|Duong'],
+    ['BIDV - 7782','Ngan hang','6.4 ty','42.8 ty','38.6 ty','10.6 ty','08:42','s2|Duong'],
+    ['Quy tien mat','Tien mat','1.8 ty','4.2 ty','4.0 ty','2.0 ty','08:42','s2|Duong'],
+    ['Quy van tai','Quy','0.4 ty','12.4 ty','13.34 ty','-540 tr','08:42','s8|Am'],
+   ]},
+  ];
+  S.forEach(buildScreen);
+
+  // ===== SPECIAL: PHIEU CAN HANG (BM13-04-03) =====
+  (function(){
+    const fld=(l,v,m)=>`<div style="flex:1 1 ${m||220}px;min-width:${m||220}px"><div style="font-size:var(--fs3);color:var(--ink3);margin-bottom:3px">${l}</div><div style="border:1px solid var(--line);border-radius:5px;padding:7px 10px;background:var(--bg);font-weight:500;min-height:32px">${v||'&nbsp;'}</div></div>`;
+    const sign=n=>`<div style="flex:1;text-align:center"><div style="font-weight:600;margin-bottom:4px">${n}</div><div style="font-size:var(--fs3);color:var(--ink4)">(ky, ghi ro ho ten)</div><div style="height:48px"></div></div>`;
+    const sec=document.createElement('div');
+    sec.className='page'; sec.setAttribute('data-page','phieucan');
+    sec.innerHTML=`
+      <div class="phdr"><div class="left"><div class="eyebrow">GD_PHIEUCAN · GIAO DICH</div><h2>Phieu can hang <b>(BM13-04-03)</b></h2><p class="sub">Phieu can hang / lenh nhap kho theo bieu mau BM13-04-03 - Phong VT &amp; GN.</p></div>
+        <div class="right"><button class="tbtn"><i class="bi bi-plus-lg"></i> Tao phieu can</button><div class="ico" title="In phieu"><i class="bi bi-printer"></i></div><div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div></div></div>
+      <div class="kpis">
+        ${[['t','clipboard-data','Phieu can hom nay','23','phieu','up','+5','so voi hom qua'],['a','speedometer2','Tong KL can','12,480','tan','up','+8.6%','so voi hom qua'],['s','truck','Luot xe','41','luot','eq','12 dang cho',''],['h','arrow-left-right','Chenh mon','-42','tan','dn','2 lo lech','can kiem tra']].map(k=>`<div class="kpi"><div class="top"><div class="ic ${k[0]}"><i class="bi bi-${k[1]}"></i></div><div class="lbl">${k[2]}</div></div><div class="val">${k[3]}<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">${k[4]}</span></div><div class="delta"><span class="chip ${k[5]}">${k[6]}</span>${k[7]}</div></div>`).join('')}
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="chd"><h3>Bieu mau phieu can hang</h3><span class="small">So phieu: ...../NC 1 TLCC</span><div class="right"><a class="cardlink">In phieu <i class="bi bi-printer"></i></a></div></div>
+        <div style="padding:14px">
+          <div style="text-align:center;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px">
+            <div style="font-weight:700;font-size:15px;letter-spacing:.5px">THANGLONG CEMENTS</div>
+            <div style="font-weight:700;font-size:16px;margin-top:4px">PHIEU CAN HANG / LENH NHAP KHO</div>
+            <div style="font-size:var(--fs3);color:var(--ink3);margin-top:2px">BM13-04-03 &middot; Phong VT &amp; GN</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:12px">
+            ${fld('So xe chuyen cho','30C-451.88')}
+            ${fld('Ten hang hoa','Clinker')}
+            ${fld('So lenh nhap kho','LNK-2026-0782')}
+            ${fld('Khach hang','Cty CP Xi mang Ha Long')}
+            ${fld('Ho ten nguoi nhan','Nguyen Van A')}
+            ${fld('CMND/CCCD','0010xxxxxxxx')}
+            ${fld('Trong luong xe khong tai','13.20 tan')}
+            ${fld('Trong luong xe co tai','45.20 tan')}
+            ${fld('Trong luong hang','32.00 tan')}
+            ${fld('So luong','32,000 kg')}
+            ${fld('Ngay can','03/06/2026')}
+            ${fld('Gio vao','08:15')}
+            ${fld('Gio ra','08:42')}
+            ${fld('Ngay lap phieu','03/06/2026')}
+          </div>
+          <div style="display:flex;gap:12px;margin-top:22px;padding-top:12px;border-top:1px dashed var(--line)">
+            ${sign('NV Can hang')}${sign('Khach hang')}${sign('Thu kho')}${sign('Bao ve')}
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chd"><h3>Phieu can gan day</h3><span class="small">23 phieu hom nay</span><div class="right"><a class="cardlink">Xuat Excel <i class="bi bi-download"></i></a></div></div>
+        <div style="padding:0 4px 4px"><table><thead><tr>
+          <th style="padding-left:14px">So phieu</th><th>So xe</th><th>Ten hang</th><th>Khach hang</th><th>Lenh NK</th><th>TL khong tai</th><th>TL co tai</th><th>TL hang (tan)</th><th>Ngay can</th><th style="padding-right:14px">Trang thai</th>
+        </tr></thead><tbody>${[
+          ['PC-2026-0782','30C-451.88','Clinker','Cty CP Xi mang Ha Long','LNK-0782','13.20','45.20','32.00','03/06/2026','s2|Da xac nhan'],
+          ['PC-2026-0781','29H-112.04','Clinker','Cty CP Xi mang Ha Long','LNK-0781','12.80','41.30','28.50','03/06/2026','s2|Da xac nhan'],
+          ['PC-2026-0780','30C-778.21','Xi mang PCB40','Tap doan Hoang Long','LNK-0780','13.00','44.10','31.10','03/06/2026','s4|Cho xac nhan'],
+          ['PC-2026-0779','15B-330.19','Clinker','Cty TNHH VLXD Sai Gon','LNK-0779','13.40','58.40','45.00','02/06/2026','s2|Da xac nhan'],
+        ].map(r=>`<tr>
+          <td style="padding-left:14px"><span class="oid">${r[0]}</span></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td>
+          <td class="vnum">${r[5]}</td><td class="vnum">${r[6]}</td><td class="vnum">${r[7]}</td><td>${r[8]}</td>
+          <td style="padding-right:14px"><span class="pill ${r[9].slice(0,r[9].indexOf('|'))}"><span class="d"></span>${r[9].slice(r[9].indexOf('|')+1)}</span></td></tr>`).join('')}</tbody></table></div>
+      </div>`;
+    content.appendChild(sec);
+    PAGE_MAP['GD_PHIEUCAN']='phieucan'; CRUMB_MAP['phieucan']='PHIEU CAN HANG';
+  })();
+})();
 </script>
 </body>
 </html>
