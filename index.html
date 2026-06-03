@@ -4968,29 +4968,112 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
   if(!content) return;
   const kpiHtml=k=>`<div class="kpi"><div class="top"><div class="ic ${k[0]}"><i class="bi bi-${k[1]}"></i></div><div class="lbl">${k[2]}</div></div><div class="val">${k[3]}${k[4]?`<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">${k[4]}</span>`:''}</div><div class="delta"><span class="chip ${k[5]}">${k[6]}</span>${k[7]}</div></div>`;
   const pill=s=>{const i=s.indexOf('|');return `<span class="pill ${s.slice(0,i)}"><span class="d"></span>${s.slice(i+1)}</span>`;};
+
+  // ---- A: luong luan chuyen chung tu (9 buoc) ----
+  const FLOW9=[
+    [1,'Hop dong & DH','donhang','file-earmark-text'],
+    [2,'Phan bo & vo bao','phanbonhmay','diagram-3'],
+    [3,'Van chuyen','khvcnoidia','truck'],
+    [4,'Giao nhan','nhanhangcang','box-arrow-in-down'],
+    [5,'Lam hang','domonkiemdem','rulers'],
+    [6,'Kho & Ton','nhapxuatkho','box-seam'],
+    [7,'Hai quan XNK','tokhaihaiquan','file-earmark-ruled'],
+    [8,'Hoa don & QT','quyettoanhang','receipt'],
+    [9,'Cong no & tien','congno','wallet2'],
+  ];
+  // ---- B: phong ban phu trach theo man hinh ----
+  const META={
+    hopdongncc:{step:1,dept:'Phong Mua hang'}, donhangncc:{step:1,dept:'Phong Mua hang'},
+    vobaodat:{step:2,dept:'Bo phan Vo bao'},
+    nhanhangcang:{step:4,dept:'Phong VT - Giao nhan'}, bangiaosalan:{step:4,dept:'Phong VT - Giao nhan'}, thuhoichungtu:{step:4,dept:'Phong VT - Giao nhan'},
+    kiemtraham:{step:5,dept:'Giam sat XH Quang Ninh'}, lamhangtau:{step:5,dept:'Giam sat XH Quang Ninh'}, domonkiemdem:{step:5,dept:'Giam sat XH Quang Ninh'}, sucotonthat:{step:5,dept:'Giam sat XH Quang Ninh'}, dichvuphutro:{step:5,dept:'Phong Van tai'}, sanluongngay:{step:5,dept:'Giam sat XH Quang Ninh'},
+    nhapxuatkho:{step:6,dept:'Thu kho'}, tonkhohang:{step:6,dept:'Thu kho'},
+    tokhaihaiquan:{step:7,dept:'Bo phan Hai quan'}, thuexnk:{step:7,dept:'Bo phan Hai quan'}, chungnhan:{step:7,dept:'Phong XNK'}, checklisthoso:{step:7,dept:'Phong XNK'}, tailieudinhkem:{step:7,dept:'Phong XNK'},
+    quyettoanhang:{step:8,dept:'Phong Mua ban hang'}, quyettoanvt:{step:8,dept:'Phong Van tai'}, quyettoanvobao:{step:8,dept:'Bo phan Vo bao'}, chiphivantai:{step:8,dept:'Phong Van tai'}, denghihoadon:{step:8,dept:'Phong Mua ban hang'}, hoadon:{step:8,dept:'Phong Ke toan'}, vaytrahang:{step:8,dept:'Phong Mua ban hang'},
+    dntt:{step:9,dept:'Phong Ke toan'}, thanhtoan:{step:9,dept:'Phong Ke toan'}, congno:{step:9,dept:'Phong Ke toan'}, thuhoicongno:{step:9,dept:'Phong Mua ban hang'}, soduquy:{step:9,dept:'Phong Ke toan'},
+    dmdoitac:{dept:'Phong Kinh doanh'}, dmhanghoa:{dept:'Phong Ke hoach'}, dmvobao:{dept:'Bo phan Vo bao'}, dmtiente:{dept:'Phong Ke toan'}, dmphuongtien:{dept:'Phong Van tai'}, dmdiadiem:{dept:'Phong Van tai'}, dmbanggia:{dept:'Phong Van tai'}, dmtaikhoan:{dept:'Phong Ke toan'},
+    sysnguoidung:{dept:'Quan tri he thong'}, sysquyendoitac:{dept:'Quan tri he thong'}, sysduyet:{dept:'Quan tri he thong'}, systracklog:{dept:'Quan tri he thong'},
+  };
+  window.SCREEN_META=META; window.FLOW9=FLOW9;
+
+  const apprState=t=>{
+    const s=(t||'').toLowerCase();
+    if(/(huy|xoa)/.test(s)) return {t:'Da huy',c:'s8',lv:0};
+    const done=/(da |hoan thanh|thong quan|hieu luc|hoat dong|^dat$|khop|^du$|da cap|tao moi|duong)/.test(s);
+    if(done) return {t:'GD da duyet',c:'s2',lv:3};
+    return {t:'Cho TP/GD',c:'s4',lv:1};
+  };
+  const flowStrip=step=>{
+    if(!step) return '';
+    return `<div class="m-chain-wrap" style="margin-bottom:14px"><div class="m-chain">`+FLOW9.map((f,i)=>{
+      const active=f[0]===step;
+      const arrow=i?`<div class="m-chain-arrow"><i class="bi bi-chevron-right"></i></div>`:'';
+      return arrow+`<div class="m-chain-step${active?' active':''}" data-go="${f[2]}"><div class="m-chain-icon hd"><i class="bi bi-${f[3]}"></i></div><div class="m-chain-info"><div class="m-chain-label">Buoc ${f[0]}</div><div class="m-chain-code">${f[1]}</div></div></div>`;
+    }).join('')+`</div></div>`;};
+  window.buildFlowStrip=flowStrip;
+
+  // ---- C: modal chi tiet chung (dung lai .modal cua he thong) ----
+  function openGenModal(cfg,row,meta){
+    const last=cfg.cols.length-1;
+    const ap=apprState(row[last].slice(row[last].indexOf('|')+1));
+    const fields=cfg.cols.map((c,i)=>`<div class="m-field"><div class="m-label">${c}</div><div class="m-value">${i===last?pill(row[i]):row[i]}</div></div>`).join('');
+    const lvl=(n,label)=>{const on=ap.lv>=n,rej=ap.lv===0;return `<div style="flex:1;text-align:center"><div style="width:26px;height:26px;border-radius:50%;margin:0 auto 4px;display:grid;place-items:center;background:${rej?'var(--err2)':on?'var(--ok2)':'var(--bg3)'};color:${rej?'var(--err)':on?'var(--ok)':'var(--ink4)'}"><i class="bi bi-${rej?'x-lg':on?'check-lg':'clock'}"></i></div><div style="font-size:var(--fs3);color:var(--ink3)">${label}</div></div>`;};
+    const appr=meta.step?`<div class="m-section"><div class="m-section-title">Phong ban phu trach &amp; Phe duyet nhieu cap</div>
+      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+        <div style="flex:1 1 180px"><div class="m-chain-label">Phong phu trach</div><div style="font-weight:600;margin-top:2px">${meta.dept||'--'}</div></div>
+        <div style="display:flex;gap:8px;flex:2 1 280px;max-width:360px">${lvl(1,'Nhan vien')}${lvl(2,'Truong phong')}${lvl(3,'Giam doc')}</div>
+      </div></div>`:'';
+    const chain=meta.step?`<div class="m-section"><div class="m-section-title">Luan chuyen chung tu (click de mo buoc)</div>${flowStrip(meta.step)}</div>`:'';
+    modalOverlay.innerHTML=`
+      <div class="modal wide">
+        <div class="modal-hd"><div class="m-icon dh"><i class="bi bi-file-earmark-text"></i></div>
+          <div class="m-titles"><div class="m-code">${row[0]}</div><div class="m-sub">${cfg.crumb}</div></div>
+          <div class="m-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></div></div>
+        <div class="modal-bd">
+          <div class="m-section"><div class="m-section-title">Thong tin chung tu</div><div class="m-grid">${fields}</div></div>
+          ${appr}${chain}
+          <div class="m-actions"><button class="tbtn" style="background:var(--ok)"><i class="bi bi-check-lg"></i> Duyet</button><button class="m-btn-secondary"><i class="bi bi-pencil"></i> Sua</button><button class="m-btn-secondary"><i class="bi bi-printer"></i> In</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
+        </div></div>`;
+    modalOverlay.classList.add('open'); document.body.style.overflow='hidden';
+    modalOverlay.querySelector('.m-close-btn').onclick=closeModal;
+    modalOverlay.querySelectorAll('.m-chain-step:not(.active)').forEach(st=>st.addEventListener('click',()=>{closeModal();switchPage(st.dataset.go);}));
+  }
+
   function buildScreen(cfg){
     const sec=document.createElement('div');
     sec.className='page'; sec.setAttribute('data-page',cfg.id);
+    const meta=META[cfg.id]||{}; const isTxn=!!meta.step;
     const num=new Set(cfg.num||[]); const last=cfg.cols.length-1;
-    const ths=cfg.cols.map((c,i)=>`<th${i===0?' style="padding-left:14px"':i===last?' style="padding-right:14px"':''}>${c}</th>`).join('');
+    const ths=cfg.cols.map((c,i)=>{
+      const pd=(isTxn&&i===last)?`<th>Phe duyet</th>`:'';
+      return pd+`<th${i===0?' style="padding-left:14px"':i===last?' style="padding-right:14px"':''}>${c}</th>`;
+    }).join('');
+    const deptLine=`<div style="margin-top:6px;font-size:var(--fs3);color:var(--ink3)"><i class="bi bi-people"></i> Phong phu trach: <b style="color:var(--ink2)">${meta.dept||'--'}</b>${isTxn?' &nbsp;·&nbsp; <i class="bi bi-diagram-3"></i> Phe duyet: <b style="color:var(--ink2)">NV → TP → GD</b>':''}</div>`;
     sec.innerHTML=`
-      <div class="phdr"><div class="left"><div class="eyebrow">${cfg.code} · ${cfg.grp||'GIAO DICH'}</div><h2>${cfg.title}</h2><p class="sub">${cfg.desc||''}</p></div>
+      <div class="phdr"><div class="left"><div class="eyebrow">${cfg.code} · ${cfg.grp||'GIAO DICH'}</div><h2>${cfg.title}</h2><p class="sub">${cfg.desc||''}</p>${deptLine}</div>
         <div class="right"><button class="tbtn"><i class="bi bi-plus-lg"></i> ${cfg.addBtn||'Tao moi'}</button><div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div><div class="ico" title="Bo loc"><i class="bi bi-funnel"></i></div></div></div>
       <div class="kpis">${(cfg.kpis||[]).map(kpiHtml).join('')}</div>
+      ${flowStrip(meta.step)}
       <div class="hd-tabs">${cfg.tabs.map((t,i)=>`<button class="${i===0?'on':''}" data-tk="${t[0]}">${t[1]} <span class="cnt">${t[2]}</span></button>`).join('')}</div>
       <div class="hd-filters"><div class="fgroup"><label>Trang thai:</label><select><option>Tat ca</option>${(cfg.statusOpts||[]).map(o=>`<option>${o}</option>`).join('')}</select></div><div class="fgroup" style="margin-left:auto"><div class="search" style="max-width:240px"><i class="bi bi-search si"></i><input placeholder="Tim kiem..."></div></div></div>
-      <div class="card"><div class="chd"><h3>${cfg.tableTitle||'Danh sach'}</h3><span class="small ge-count">${cfg.rows.length} ban ghi</span><div class="right"><a class="cardlink">Xuat Excel <i class="bi bi-download"></i></a></div></div>
+      <div class="card"><div class="chd"><h3>${cfg.tableTitle||'Danh sach'}</h3><span class="small ge-count">${cfg.rows.length} ban ghi</span><div class="right">${isTxn?'<span class="small" style="color:var(--ink4)">Click dong de xem chi tiet &amp; luan chuyen</span>&nbsp;&nbsp;':''}<a class="cardlink">Xuat Excel <i class="bi bi-download"></i></a></div></div>
         <div style="padding:0 4px 4px"><table><thead><tr>${ths}</tr></thead><tbody class="ge-tbody"></tbody></table></div>
         <div class="tfoot"><span class="small ge-foot"></span><div class="pg"><button>&lsaquo;</button><button class="on">1</button><button>&rsaquo;</button></div></div></div>`;
     content.appendChild(sec);
+    sec.querySelectorAll('.m-chain-step:not(.active)').forEach(st=>st.addEventListener('click',()=>switchPage(st.dataset.go)));
     const tbody=sec.querySelector('.ge-tbody');
     const render=rows=>{
       tbody.innerHTML='';
       rows.forEach(r=>{
         const tr=document.createElement('tr');
-        tr.innerHTML=r.map((cell,i)=> i===0?`<td style="padding-left:14px"><span class="oid">${cell}</span></td>`
-          : i===last?`<td style="padding-right:14px">${pill(cell)}</td>`
-          : `<td class="${num.has(i)?'vnum':''}">${cell}</td>`).join('');
+        const ap=apprState(r[last].slice(r[last].indexOf('|')+1));
+        tr.innerHTML=r.map((cell,i)=>{
+          const apprCell=(isTxn&&i===last)?`<td><span class="pill ${ap.c}"><span class="d"></span>${ap.t}</span></td>`:'';
+          return apprCell+(i===0?`<td style="padding-left:14px"><span class="oid">${cell}</span></td>`
+            : i===last?`<td style="padding-right:14px">${pill(cell)}</td>`
+            : `<td class="${num.has(i)?'vnum':''}">${cell}</td>`);
+        }).join('');
+        if(isTxn){tr.style.cursor='pointer';tr.addEventListener('click',()=>openGenModal(cfg,r,meta));}
         tbody.appendChild(tr);
       });
       sec.querySelector('.ge-count').textContent=rows.length+' ban ghi';
@@ -5533,6 +5616,33 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     content.appendChild(sec);
     PAGE_MAP['RPT_*']='baocao'; CRUMB_MAP['baocao']='BAO CAO';
   }
+})();
+
+// ===== A+B for ORIGINAL transactional screens (flow strip + phong phu trach) =====
+(function(){
+  const fs=window.buildFlowStrip; if(!fs) return;
+  const ORIG={ hopdong:[1,'Phong Mua ban hang / XNK'], phuluc:[1,'Phong Mua ban hang'], donhang:[1,'Phong Mua ban hang'], chitietdonhang:[1,'Phong Mua ban hang'], phanbonhmay:[2,'Phong Van tai'], vobao:[2,'Bo phan Vo bao'], chuyentau:[3,'Phong Van tai'], phieusalan:[3,'Phong VT - Dieu do'], khvcnoidia:[3,'Phong Van tai'] };
+  Object.entries(ORIG).forEach(([pid,m])=>{
+    const sec=document.querySelector(`.page[data-page="${pid}"]`); if(!sec) return;
+    // dept line in header
+    const left=sec.querySelector('.phdr .left');
+    if(left && !left.querySelector('.dept-line')){
+      const d=document.createElement('div');
+      d.className='dept-line';
+      d.style.cssText='margin-top:6px;font-size:var(--fs3);color:var(--ink3)';
+      d.innerHTML=`<i class="bi bi-people"></i> Phong phu trach: <b style="color:var(--ink2)">${m[1]}</b> &nbsp;·&nbsp; <i class="bi bi-diagram-3"></i> Phe duyet: <b style="color:var(--ink2)">NV → TP → GD</b>`;
+      left.appendChild(d);
+    }
+    // flow strip after kpis (or after phdr)
+    if(!sec.querySelector('.m-chain-wrap')){
+      const anchor=sec.querySelector('.kpis')||sec.querySelector('.phdr');
+      if(anchor){
+        anchor.insertAdjacentHTML('afterend', fs(m[0]));
+        const wrap=anchor.nextElementSibling;
+        wrap && wrap.querySelectorAll('.m-chain-step:not(.active)').forEach(st=>st.addEventListener('click',()=>switchPage(st.dataset.go)));
+      }
+    }
+  });
 })();
 </script>
 </body>
