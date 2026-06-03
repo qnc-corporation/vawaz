@@ -516,6 +516,15 @@ tbody tr:hover{background:var(--bg2)}
 .db-sg-tabs button .cnt{font-family:var(--mono);font-size:var(--fs3);padding:1px 6px;border-radius:99px;font-weight:600}
 .db-sg-tabs button.on .cnt{background:rgba(255,255,255,.2);color:rgba(255,255,255,.9)}
 .db-sg-tabs button:not(.on) .cnt{background:var(--bg3);color:var(--ink4)}
+
+/* In bieu mau: chi in noi dung modal (bieu mau), an giao dien */
+@media print{
+  body *{visibility:hidden!important}
+  #detail-modal,#detail-modal *{visibility:visible!important}
+  #detail-modal{position:absolute!important;inset:0!important;background:#fff!important;display:block!important;padding:0!important;overflow:visible!important;backdrop-filter:none!important}
+  #detail-modal .modal{box-shadow:none!important;border:0!important;max-width:100%!important;width:100%!important}
+  .m-actions,.m-close,.no-print{display:none!important}
+}
 </style>
 </head>
 <body data-density="compact">
@@ -5038,6 +5047,45 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     }).join('')+`</div></div>`;};
   window.buildFlowStrip=flowStrip;
 
+  // ---- Muc 4: Bieu mau in (theo cot BIEU MAU cua quy trinh) ----
+  // tpl = {title, code, sign:[...vai tro ky], note}
+  const FORM_TEMPLATES={
+    donhangncc:{title:'DON DAT HANG',code:'BM-DDH (mau cong ty)',sign:['Nguoi lap (P.XK)','Truong phong','Giam doc','Nha cung cap'],note:'Kinh gui Quy nha cung cap, cong ty de nghi cung cap hang hoa theo noi dung don dat hang duoi day.'},
+    bangiaosalan:{title:'BIEN BAN GIAO NHAN HANG (SA LAN)',code:'BM-BBGN',sign:['Ben giao (NV giao nhan)','Ben nhan (Thuyen truong sa lan)','Don vi giam sat'],note:'Hai ben tien hanh giao nhan hang, kep chi va xac nhan khoi luong, tinh trang niem chi nhu sau:'},
+    quyettoanvt:{title:'BIEN BAN THANH QUYET TOAN KHOI LUONG & BOI THUONG',code:'BM-QTVT',sign:['Dai dien Cty (P.VT)','Nha thau van chuyen','Truong phong','Giam doc'],note:'Cac ben thong nhat thanh quyet toan khoi luong van chuyen, ton that va boi thuong (neu co) nhu sau:'},
+    dntt:{title:'DE NGHI THANH TOAN',code:'BM-DNTT',sign:['Nguoi de nghi','Ke toan','Truong phong','Giam doc'],note:'Kinh trinh Ban Giam doc phe duyet thanh toan khoan chi phi duoi day theo dieu khoan hop dong.'},
+  };
+  function openFormModal(cfg,row,tpl,meta,refresh){
+    const last=cfg.cols.length-1;
+    const fld=(l,v)=>`<div style="flex:1 1 240px;min-width:240px"><div style="font-size:var(--fs3);color:var(--ink3);margin-bottom:3px">${l}</div><div style="border:1px solid var(--line);border-radius:5px;padding:7px 10px;background:var(--bg);font-weight:500;min-height:32px">${v||'&nbsp;'}</div></div>`;
+    const fields=cfg.cols.map((c,i)=>fld(c, i===last?row[i].slice(row[i].indexOf('|')+1):row[i])).join('');
+    const sign=n=>`<div style="flex:1;text-align:center;min-width:120px"><div style="font-weight:600;margin-bottom:2px">${n}</div><div style="font-size:var(--fs3);color:var(--ink4)">(ky, ghi ro ho ten)</div><div style="height:54px"></div></div>`;
+    modalOverlay.innerHTML=`
+      <div class="modal wide">
+        <div class="modal-hd no-print"><div class="m-icon dh"><i class="bi bi-file-earmark-ruled"></i></div>
+          <div class="m-titles"><div class="m-code">${tpl.title}</div><div class="m-sub">${tpl.code} · ${row[0]}</div></div>
+          <div class="m-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></div></div>
+        <div class="modal-bd">
+          <div style="padding:6px 6px 14px">
+            <div style="text-align:center;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px">
+              <div style="font-weight:700;font-size:15px;letter-spacing:.5px">THANGLONG CEMENTS — QNC</div>
+              <div style="font-weight:700;font-size:16px;margin-top:4px">${tpl.title}</div>
+              <div style="font-size:var(--fs3);color:var(--ink3);margin-top:2px">${tpl.code} &middot; So: ${row[0]}</div>
+            </div>
+            <p style="font-size:var(--fs2);color:var(--ink2);margin-bottom:12px">${tpl.note}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:12px">${fields}</div>
+            <div style="display:flex;gap:12px;margin-top:24px;padding-top:12px;border-top:1px dashed var(--line)">${tpl.sign.map(sign).join('')}</div>
+            <div style="text-align:right;font-size:var(--fs3);color:var(--ink4);margin-top:10px">Ngay ..... thang ..... nam 2026</div>
+          </div>
+          <div class="m-actions no-print"><button class="tbtn m-print-btn" style="background:var(--pri)"><i class="bi bi-printer"></i> In bieu mau</button><button class="m-btn-secondary m-back-btn"><i class="bi bi-arrow-left"></i> Quay lai</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
+        </div></div>`;
+    modalOverlay.classList.add('open'); document.body.style.overflow='hidden';
+    modalOverlay.querySelector('.m-close-btn').onclick=closeModal;
+    modalOverlay.querySelector('.m-print-btn').onclick=()=>window.print();
+    modalOverlay.querySelector('.m-back-btn').onclick=()=>openGenModal(cfg,row,meta,refresh);
+  }
+  window.__openFormModal=openFormModal;
+
   // ---- C: modal chi tiet chung (dung lai .modal cua he thong) ----
   function openGenModal(cfg,row,meta,refresh){
     const last=cfg.cols.length-1;
@@ -5058,6 +5106,8 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     const approveBtn=meta.step?(state==='done'?`<button class="m-btn-secondary" disabled style="opacity:.6"><i class="bi bi-check-all"></i> Da duyet</button>`:state==='rejected'?`<button class="m-btn-secondary" disabled style="opacity:.6"><i class="bi bi-x-octagon"></i> Da huy</button>`:`<button class="tbtn m-approve-btn" style="background:var(--ok)"><i class="bi bi-check-lg"></i> Duyet (${role.appr.join('·')})</button>`):'';
     const loCode=(JSON.stringify(row).match(/DH-2026-\d{4}/)||[])[0];
     const loBtn=(loCode&&window.openLotDossier)?`<button class="m-btn-secondary m-lo-btn"><i class="bi bi-diagram-3"></i> Ho so lo</button>`:'';
+    const tpl=FORM_TEMPLATES[cfg.id];
+    const formBtn=tpl?`<button class="m-btn-secondary m-form-btn"><i class="bi bi-file-earmark-ruled"></i> Xem bieu mau</button>`:'';
     modalOverlay.innerHTML=`
       <div class="modal wide">
         <div class="modal-hd"><div class="m-icon dh"><i class="bi bi-file-earmark-text"></i></div>
@@ -5066,7 +5116,7 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
         <div class="modal-bd">
           <div class="m-section"><div class="m-section-title">Thong tin chung tu</div><div class="m-grid">${fields}</div></div>
           ${apprSec}${chain}
-          <div class="m-actions">${approveBtn}${loBtn}<button class="m-btn-secondary"><i class="bi bi-pencil"></i> Sua</button><button class="m-btn-secondary"><i class="bi bi-printer"></i> In</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
+          <div class="m-actions">${approveBtn}${formBtn}${loBtn}<button class="m-btn-secondary"><i class="bi bi-pencil"></i> Sua</button><button class="m-btn-secondary m-close-btn" style="margin-left:auto"><i class="bi bi-x-lg"></i> Dong</button></div>
         </div></div>`;
     modalOverlay.classList.add('open'); document.body.style.overflow='hidden';
     modalOverlay.querySelector('.m-close-btn').onclick=closeModal;
@@ -5075,6 +5125,8 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     if(ab) ab.onclick=()=>{ APPROVED.add(row); if(refresh)refresh(); if(window.refreshApprovalInbox)window.refreshApprovalInbox(); openGenModal(cfg,row,meta,refresh); };
     const lb=modalOverlay.querySelector('.m-lo-btn');
     if(lb) lb.onclick=()=>{ closeModal(); window.openLotDossier(loCode); };
+    const fb=modalOverlay.querySelector('.m-form-btn');
+    if(fb) fb.onclick=()=>openFormModal(cfg,row,tpl,meta,refresh);
   }
   window.__openGenModal=openGenModal;
 
