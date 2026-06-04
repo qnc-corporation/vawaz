@@ -5204,6 +5204,8 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     const meta=META[cfg.id]||{}; const isTxn=!!meta.step;
     const role=roleOf(cfg,meta);
     const num=new Set(cfg.num||[]); const last=cfg.cols.length-1;
+    const tabKeys=(cfg.tabs||[]).filter(t=>t[0]!=='all').map(t=>t[0].toLowerCase());
+    const tabMatch=(r,tk)=>{const hay=r.join(' ').toLowerCase();tk=tk.toLowerCase();if(!hay.includes(tk))return false;return !tabKeys.some(k=>k.length>tk.length&&hay.includes(k));};
     const ths=cfg.cols.map((c,i)=>{
       const pd=(isTxn&&i===last)?`<th>Phe duyet</th>`:'';
       return pd+`<th${i===0?' style="padding-left:14px"':i===last?' style="padding-right:14px"':''}>${c}</th>`;
@@ -5215,7 +5217,7 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
         <div class="right"><button class="tbtn ge-add"><i class="bi bi-plus-lg"></i> ${cfg.addBtn||'Tao moi'}</button><div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div><div class="ico" title="Bo loc"><i class="bi bi-funnel"></i></div></div></div>
       <div class="kpis">${(cfg.kpis||[]).map(kpiHtml).join('')}</div>
       ${flowStrip(meta.step)}
-      <div class="hd-tabs">${cfg.tabs.map((t,i)=>{const tk=t[0];const cnt=(tk==='all')?cfg.rows.length:cfg.rows.filter(r=>r.join(' ').toLowerCase().includes(tk.toLowerCase())).length;return `<button class="${i===0?'on':''}" data-tk="${tk}">${t[1]} <span class="cnt">${cnt}</span></button>`;}).join('')}</div>
+      <div class="hd-tabs">${cfg.tabs.map((t,i)=>{const tk=t[0];const cnt=(tk==='all')?cfg.rows.length:cfg.rows.filter(r=>tabMatch(r,tk)).length;return `<button class="${i===0?'on':''}" data-tk="${tk}">${t[1]} <span class="cnt">${cnt}</span></button>`;}).join('')}</div>
       <div class="hd-filters"><div class="fgroup"><label>Trang thai:</label><select><option>Tat ca</option>${(cfg.statusOpts||[]).map(o=>`<option>${o}</option>`).join('')}</select></div><div class="fgroup" style="margin-left:auto"><div class="search" style="max-width:240px"><i class="bi bi-search si"></i><input placeholder="Tim kiem..."></div></div></div>
       <div class="card"><div class="chd"><h3>${cfg.tableTitle||'Danh sach'}</h3><span class="small ge-count">${cfg.rows.length} ban ghi</span><div class="right">${isTxn?'<span class="small" style="color:var(--ink4)">Click dong de xem chi tiet &amp; luan chuyen</span>&nbsp;&nbsp;':''}<a class="cardlink">Xuat Excel <i class="bi bi-download"></i></a></div></div>
         <div style="padding:0 4px 4px"><table><thead><tr>${ths}</tr></thead><tbody class="ge-tbody"></tbody></table></div>
@@ -5247,7 +5249,7 @@ document.getElementById('pl-tbody').addEventListener('click',e=>{
     };
     function applyFilters(){
       let rows=cfg.rows.slice();
-      if(curTab&&curTab!=='all') rows=rows.filter(r=>r.join(' ').toLowerCase().includes(curTab.toLowerCase()));
+      if(curTab&&curTab!=='all') rows=rows.filter(r=>tabMatch(r,curTab));
       const sv=selEl?selEl.value:''; if(sv&&sv!=='Tat ca') rows=rows.filter(r=>stOf(r)===sv);
       const q=inpEl?inpEl.value.trim().toLowerCase():''; if(q) rows=rows.filter(r=>r.join(' ').toLowerCase().includes(q));
       render(rows);
