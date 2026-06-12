@@ -1,0 +1,77 @@
+<div class="page" data-page="canhbao">
+        <div class="phdr">
+          <div class="left">
+            <div class="eyebrow">SYS_CANHBAO · HE THONG</div>
+            <h2>Cảnh báo — <b>Công nợ / Dòng tiền / Chênh món</b></h2>
+            <p class="sub">Tổng hợp cảnh báo tự động từ hệ thống: công nợ quá hạn, dòng tiền âm, chênh lệch số dư và phát hiện bất hợp lệ.</p>
+          </div>
+          <div class="right">
+            <button class="tbtn" style="background:var(--err)"><i class="bi bi-bell"></i> 7 cảnh báo mới</button>
+            <div class="ico" title="Cấu hình cảnh báo"><i class="bi bi-gear"></i></div>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-exclamation-triangle"></i></div><div class="lbl">Cảnh báo tổng</div></div>
+            <div class="val">11</div>
+            <div class="delta"><span class="chip dn">+4</span>so với tuần trước · 4 khẩn cấp</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-alarm"></i></div><div class="lbl">Hạn chốt quy trình</div></div>
+            <div class="val">4 <span style="font-size:12px;color:var(--ink4);font-weight:400">viec</span></div>
+            <div class="delta"><span class="chip dn">2 gap</span>nộp thuế · HD gốc mung 5</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic a"><i class="bi bi-cash-stack"></i></div><div class="lbl">Công nợ quá hạn</div></div>
+            <div class="val">2.1<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">ty</span></div>
+            <div class="delta"><span class="chip dn">3 đơn</span>quá hạn > 15 ngày</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic s"><i class="bi bi-wallet2"></i></div><div class="lbl">Dòng tiền âm</div></div>
+            <div class="val">-840<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">tr</span></div>
+            <div class="delta"><span class="chip dn">2 quy</span>âm dư trong 7 ngày</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic t"><i class="bi bi-arrow-left-right"></i></div><div class="lbl">Chênh món</div></div>
+            <div class="val">4 <span style="font-size:12px;color:var(--ink4);font-weight:400">suat</span></div>
+            <div class="delta"><span class="chip eq">2 cần xử lý</span>· 2 đã xem</div>
+          </div>
+        </div>
+
+        <div class="cb-tabs" id="cb-tabs">
+          <button class="on" data-tab="congno">Công nợ <span class="cnt">3</span></button>
+          <button class="cb-amb" data-tab="dongtien">Dòng tiền <span class="cnt">2</span></button>
+          <button class="cb-info" data-tab="chenhmon">Chênh món <span class="cnt">2</span></button>
+          <button data-tab="deadline">Deadline quy trình <span class="cnt">4</span></button>
+        </div>
+
+        <!-- Công nợ alerts -->
+        <div class="cb-section" id="cb-congno">
+          <div class="cb-card">
+            <div class="cb-hd"><h3>Cảnh báo công nợ quá hạn</h3><span class="cb-badge" style="background:var(--err2);color:var(--err)">3 cảnh báo</span></div>
+            <div class="cb-bd" id="cb-congno-list"></div>
+          </div>
+        </div>
+        <!-- Dòng tiền alerts -->
+        <div class="cb-section" id="cb-dongtien" style="display:none">
+          <div class="cb-card">
+            <div class="cb-hd"><h3>Cảnh báo dòng tiền âm</h3><span class="cb-badge" style="background:var(--acc3);color:var(--acc)">2 cảnh báo</span></div>
+            <div class="cb-bd" id="cb-dongtien-list"></div>
+          </div>
+        </div>
+        <!-- Chênh món alerts -->
+        <div class="cb-section" id="cb-chenhmon" style="display:none">
+          <div class="cb-card">
+            <div class="cb-hd"><h3>Cảnh báo chênh món số dư</h3><span class="cb-badge" style="background:var(--pri3);color:var(--pri)">2 cảnh báo</span></div>
+            <div class="cb-bd" id="cb-chenhmon-list"></div>
+          </div>
+        </div>
+        <!-- Deadline quy trình alerts -->
+        <div class="cb-section" id="cb-deadline" style="display:none">
+          <div class="cb-card">
+            <div class="cb-hd"><h3>Cảnh báo hạn chốt theo quy trình</h3><span class="cb-badge" style="background:var(--err2);color:var(--err)">4 cảnh báo</span></div>
+            <div class="cb-bd" id="cb-deadline-list"></div>
+          </div>
+        </div>
+      </div><!-- end page canhbao -->

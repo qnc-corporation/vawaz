@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QNC ERP — Tổng quan</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/01-tokens.css">
+  <link rel="stylesheet" href="css/02-sidebar.css">
+  <link rel="stylesheet" href="css/03-main.css">
+</head>
+<body data-density="compact">
+  <aside class="sb" id="app-sidebar">
+    <div class="brand">
+      <div class="logo">Q</div>
+      <div><h1>VAWAZ</h1><small>Hàng hóa & Vận tải · v7</small></div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sb-foot">
+      <div class="avatar">NA</div>
+      <div class="who"><b>Nguyễn An</b><small>Quản lý vận tải</small></div>
+      <div class="ic" title="Cài đặt"><i class="bi bi-gear"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <button type="button" class="tbi sb-toggle" id="sbToggle" title="Ẩn menu điều hướng"
+        aria-label="Ẩn hiện menu điều hướng" aria-expanded="true" aria-controls="app-sidebar">
+        <i class="bi bi-layout-sidebar"></i>
+      </button>
+      <div class="crumb">
+        <span>SƠ ĐỒ</span><span class="sep">/</span>
+        <span>HÀNG HÓA &amp; VẬN TẢI</span><span class="sep">/</span>
+        <b id="crumb-page">TỔNG QUAN</b>
+      </div>
+      <div class="search" id="nav-search-wrap">
+        <i class="bi bi-search si"></i>
+        <input id="nav-search" type="search" autocomplete="off" spellcheck="false"
+          placeholder="Tìm menu: phân bổ, DNTT, tàu mẹ…"
+          aria-label="Tìm mục menu" aria-expanded="false" aria-controls="nav-search-drop" aria-autocomplete="list">
+        <kbd>Ctrl K</kbd>
+        <div class="nav-sdrop" id="nav-search-drop" role="listbox" hidden></div>
+      </div>
+      <div class="tba">
+        <div class="tbi" title="Cảnh báo"><i class="bi bi-bell"></i><span class="ndot"></span></div>
+        <div class="tbi" title="Trợ giúp"><i class="bi bi-question-circle"></i></div>
+        <button class="tbtn"><i class="bi bi-plus-lg"></i> Tạo đơn hàng</button>
+      </div>
+    </header>
+
+    <div class="content">
+    <!-- Pages: html/pages/*.html — nạp bởi js/core/00-load-pages.js -->
+  </div>
+  </main>
+
+  <script src="js/core/00-bootstrap.js"></script>
+</body>
+</html>

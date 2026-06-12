@@ -1,0 +1,123 @@
+<div class="page" data-page="vobao">
+        <div class="phdr">
+          <div class="left">
+            <div class="eyebrow">GD_VOBAO · GIAO DICH</div>
+            <h2>Phân bổ / luân chuyển vỏ bao</h2>
+            <p class="sub">Quản lý phân bổ và luân chuyển vỏ bao giữa các nhà máy và kho. Theo dõi số lượng vỏ bao nhập, xuất, tồn kho và trạng thái luân chuyển.</p>
+          </div>
+          <div class="right">
+            <button class="tbtn" id="vb-btn-back" style="background:var(--bg2);color:var(--ink3);border:1px solid var(--line)"><i class="bi bi-arrow-left"></i> Phân bổ NM</button>
+            <button class="tbtn" style="background:var(--pri)"><i class="bi bi-plus-lg"></i> Luân chuyển mới</button>
+            <button class="tbtn" id="vb-btn-auto" style="background:var(--bg2);color:var(--ink3);border:1px solid var(--line)"><i class="bi bi-magic"></i> Tự động PB</button>
+            <div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+          </div>
+        </div>
+
+        <div class="kpis" id="vb-kpis">
+          <div class="kpi">
+            <div class="top"><div class="ic t"><i class="bi bi-box-seam"></i></div><div class="lbl">Tổng vỏ bao</div></div>
+            <div class="val" id="vb-kpi-total">0</div>
+            <div class="delta"><span class="chip eq">4 loai</span>vỏ bao đang quản lý</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic a"><i class="bi bi-check2-all"></i></div><div class="lbl">Đã luân chuyển</div></div>
+            <div class="val" id="vb-kpi-done">0</div>
+            <div class="delta"><span class="chip up">3 chuyen</span>hoàn thành hôm nay</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic s"><i class="bi bi-hourglass-split"></i></div><div class="lbl">Đang luân chuyển</div></div>
+            <div class="val" id="vb-kpi-transit">0</div>
+            <div class="delta"><span class="chip dn">2 chuyen</span>đang tren duong</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-exclamation-triangle"></i></div><div class="lbl">Tồn kho thấp</div></div>
+            <div class="val" id="vb-kpi-low">0</div>
+            <div class="delta"><span class="chip dn">2 kho</span>can bổ sung voi</div>
+          </div>
+        </div>
+
+        <div class="hd-tabs" id="vb-tabs">
+          <button class="on" data-tab="all">Tất cả <span class="cnt" id="vb-tab-cnt-all">0</span></button>
+          <button data-tab="danglc">Đang luân chuyển <span class="cnt" id="vb-tab-cnt-danglc">0</span></button>
+          <button data-tab="dalc">Đã luân chuyển <span class="cnt" id="vb-tab-cnt-dalc">0</span></button>
+          <button data-tab="tonkho">Tồn kho <span class="cnt" id="vb-tab-cnt-tonkho">0</span></button>
+          <button data-tab="cho">Chờ luân chuyển <span class="cnt" id="vb-tab-cnt-cho">0</span></button>
+        </div>
+
+        <!-- Bulk actions bar -->
+        <div class="hd-filters" id="vb-bulk-bar" style="display:none;background:var(--pri3);border:1px solid var(--pri4);border-radius:4px;margin-bottom:8px;padding:6px 12px;align-items:center;gap:10px">
+          <span style="font-size:var(--fs3);color:var(--pri);font-weight:600" id="vb-selected-count">0 dòng chọn</span>
+          <button class="tbtn" style="height:26px;font-size:var(--fs3);background:var(--pri);color:#fff"><i class="bi bi-arrow-left-right"></i> Luân chuyển</button>
+          <button class="tbtn" style="height:26px;font-size:var(--fs3)"><i class="bi bi-pencil"></i> Sửa SL</button>
+          <button class="tbtn" style="height:26px;font-size:var(--fs3)"><i class="bi bi-trash3"></i> Hủy</button>
+          <button class="tbtn" style="height:26px;font-size:var(--fs3);margin-left:auto" id="vb-clear-sel"><i class="bi bi-x-lg"></i> Bo chon</button>
+        </div>
+
+        <div class="hd-filters">
+          <div class="fgroup">
+            <label>Loai vỏ bao</label>
+            <select id="vb-filter-loai"><option value="">Tất cả</option><option>Vỏ bao PP</option><option>Vỏ bao GI</option><option>Vỏ bao PP cu</option><option>Vỏ bao GI cu</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Nhà máy</label>
+            <select id="vb-filter-nm"><option value="">Tất cả</option><option>NM Ha Long</option><option>NM Bim Son</option><option>NM Hoang Long</option><option>NM Mien Bac</option><option>NM Sai Gon</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Kho</label>
+            <select id="vb-filter-kho"><option value="">Tất cả</option><option>Kho HL</option><option>Kho BS</option><option>Kho HLo</option><option>Kho MB</option><option>Kho SG</option></select>
+          </div>
+          <div class="fgroup" style="margin-left:auto">
+            <div class="search" style="max-width:260px">
+              <i class="bi bi-search si"></i>
+              <input id="vb-search" placeholder="Tìm mã VB, nhà máy, kho...">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chd">
+            <h3 id="vb-table-title">Phân bổ / luân chuyển vỏ bao — Tất cả</h3>
+            <span class="small" id="vb-count">0 dong</span>
+            <div class="right">
+              <div class="seg">
+                <button class="on" data-sort="recent">Gần đây</button>
+                <button data-sort="sl">SL</button>
+              </div>
+            </div>
+          </div>
+          <div style="padding:0 4px 4px">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:30px;padding-left:14px"><input type="checkbox" id="vb-select-all" style="accent-color:var(--pri)"></th>
+                  <th>Mã luân chuyển</th>
+                  <th>Loai vỏ bao</th>
+                  <th>Tu (NM/Kho)</th>
+                  <th>Den (NM/Kho)</th>
+                  <th>So luong</th>
+                  <th>Trong luong</th>
+                  <th>Ngày luân chuyển</th>
+                  <th>Trạng thái</th>
+                  <th style="padding-right:14px;text-align:center">Thao tac</th>
+                </tr>
+              </thead>
+              <tbody id="vb-tbody"></tbody>
+            </table>
+          </div>
+          <div class="tfoot">
+            <span class="small" id="vb-footer">0 / 0 dong</span>
+            <div class="pg">
+              <button>&lsaquo;</button>
+              <button class="on">1</button>
+              <button>2</button>
+              <button>3</button>
+              <button>…</button>
+              <button>&rsaquo;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          Trang phân bổ và luân chuyển vỏ bao giúp theo dõi việc điều chuyển vỏ bao giữa các nhà máy và kho. Click vào dòng để xem chi tiết luân chuyển, lịch sử và thao tác. Vỏ bao <b>Tồn kho thấp</b> cần được bổ sung kịp thời để đảm bảo sản xuất. Sử dụng <b>Tự động PB</b> để hệ thống tự động điều chuyển vỏ bao theo như cầu.
+        </div>
+      </div><!-- end page vobao -->

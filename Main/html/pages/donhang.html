@@ -1,0 +1,118 @@
+<div class="page" data-page="donhang">
+        <div class="phdr">
+          <div class="left">
+            <div class="eyebrow">GD_DONHANG · GIAO DICH</div>
+            <h2>Đơn hàng — <b>Theo dõi & Quản lý</b></h2>
+            <p class="sub">Quản lý đơn hàng xuất khẩu, nội địa và dịch vụ. Theo dõi chặng đơn hàng, SLA, khối lượng và trạng thái giao hàng.</p>
+          </div>
+          <div class="right">
+            <button class="tbtn"><i class="bi bi-plus-lg"></i> Tạo đơn hàng</button>
+            <div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+            <div class="ico" title="Bộ lọc"><i class="bi bi-funnel"></i></div>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="top"><div class="ic t"><i class="bi bi-box-seam"></i></div><div class="lbl">Đơn hàng đang chạy</div></div>
+            <div class="val">47</div>
+            <div class="delta"><span class="chip up">+8</span>so với tuần trước · 12 đơn mới tạo</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic a"><i class="bi bi-currency-dollar"></i></div><div class="lbl">Tổng giá trị đơn</div></div>
+            <div class="val">38.2<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">ty</span></div>
+            <div class="delta"><span class="chip up">+15.2%</span>so với T5 · XK chiem 68%</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic s"><i class="bi bi-truck"></i></div><div class="lbl">Đang vận chuyển</div></div>
+            <div class="val">18</div>
+            <div class="delta"><span class="chip eq">6 lo</span>trên sà lan · 2 lo chờ dỡ món</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-exclamation-triangle"></i></div><div class="lbl">Trễ hạn / SLA</div></div>
+            <div class="val">5</div>
+            <div class="delta"><span class="chip dn">3 đơn</span>trễ hạn · 2 đơn SLA < 24h</div>
+          </div>
+        </div>
+
+        <div class="hd-tabs" id="dh-tabs">
+          <button class="on" data-tab="all">Tất cả <span class="cnt">47</span></button>
+          <button data-tab="xk">Xuất khẩu <span class="cnt">22</span></button>
+          <button data-tab="nd">Nội địa <span class="cnt">18</span></button>
+          <button data-tab="dv">Dịch vụ <span class="cnt">7</span></button>
+        </div>
+
+        <div class="hd-filters">
+          <div class="fgroup">
+            <label>Trạng thái</label>
+            <select><option>Tất cả</option><option selected>Đang xử lý</option><option>Đang vận chuyển</option><option>Chờ làm hàng</option><option>Đã giao</option><option>Trễ hạn</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Chặng</label>
+            <select><option>Tất cả</option><option>1 · HD & DH</option><option>2 · Phân bổ</option><option>3 · Vận chuyển</option><option>4 · Giao nhận</option><option>5 · Làm hàng</option><option>6 · Hải quan XNK</option><option>7 · Hóa đơn & QT</option><option>8 · Công nợ</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Khách hàng</label>
+            <select id="dh-filter-cust"><option>Tất cả</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Sản phẩm</label>
+            <select><option>Tất cả</option><option>Clinker</option><option>Xi măng</option><option>Thạch cao</option></select>
+          </div>
+          <div class="fgroup" style="margin-left:auto">
+            <div class="search" style="max-width:220px">
+              <i class="bi bi-search si"></i>
+              <input placeholder="Tìm mã DH, khách hàng...">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chd">
+            <h3 id="dh-table-title">Đơn hàng — Tất cả</h3>
+            <span class="small" id="dh-count">47 đơn</span>
+            <div class="right">
+              <div class="seg">
+                <button class="on">Gần đây</button>
+                <button>Giá trị</button>
+                <button>Deadline</button>
+              </div>
+            </div>
+          </div>
+          <div style="padding:0 4px 4px">
+            <table>
+              <thead>
+                <tr>
+                  <th style="padding-left:14px">Mã DH</th>
+                  <th>Hợp đồng</th>
+                  <th>Khách hàng</th>
+                  <th>Sản phẩm</th>
+                  <th>Khối lượng</th>
+                  <th>Chặng</th>
+                  <th>Giá trị</th>
+                  <th>SLA</th>
+                  <th style="padding-right:14px">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="dh-tbody"></tbody>
+            </table>
+          </div>
+          <div class="tfoot">
+            <span class="small" id="dh-footer">47 / 47 đơn</span>
+            <div class="pg">
+              <button>&lsaquo;</button>
+              <button class="on">1</button>
+              <button>2</button>
+              <button>3</button>
+              <button>4</button>
+              <button>…</button>
+              <button>&rsaquo;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          Đơn hàng là đơn vị giao dịch chính trong lộ trình. Mỗi đơn hàng được liên kết với hợp đồng gốc và đi qua 8 chặng từ ký hợp đồng đến thu hồi công nợ.
+          <b>Lưu ý:</b> Đơn hàng trễ hạn tự động chuyển sang trang Cảnh báo. SLA được tính từ ngày tạo đơn.
+        </div>
+      </div><!-- end page donhang -->

@@ -1,0 +1,64 @@
+QNC ERP — Bản đồ file Main/ (sửa đúng file, tránh đọc toàn bộ index.html gốc)
+
+CẤU TRÚC
+  index.html          Shell: head, sidebar, topbar, thứ tự load script
+  css/                Style theo vùng UI
+  html/pages/         HTML từng màn (data-page)
+  js/core/            Hạ tầng: load pages, navigation, modal, flow strip
+  js/nav/             Sidebar, NAV_LABEL, pin, tìm menu Ctrl+K
+  js/screens/         Logic + data theo màn hình
+
+HTML PAGES (11)
+  html/pages/dashboard.html
+  html/pages/hopdong.html
+  html/pages/canhbao.html
+  html/pages/phuluc.html
+  html/pages/donhang.html
+  html/pages/chitietdonhang.html
+  html/pages/phanbonhmay.html
+  html/pages/vobao.html
+  html/pages/chuyentau.html
+  html/pages/phieusalan.html
+  html/pages/khvcnoidia.html
+
+JS — CORE
+  js/core/00-bootstrap.js   Nạp pages + load JS (dev: npx serve Main)
+  js/core/01-density-toggle.js
+  js/core/02-sidebar-toggle.js
+  js/core/03-page-navigation.js   PAGE_MAP, switchPage
+  js/core/04-modal.js             Modal chi tiết, lookup helpers
+  js/core/05-flow-strip.js
+
+JS — NAV
+  js/nav/01-sidebar-config.js     NAV, renderNav, pin, syncNavActive
+  js/nav/02-nav-search.js         Tìm menu NAV_LABEL + NAV_HINT
+
+JS — SCREENS
+  js/screens/01-dashboard.js      Journey, pipeline, bảng đơn ưu tiên
+  js/screens/02-hopdong.js
+  js/screens/03-canhbao.js
+  js/screens/04-phuluc.js
+  js/screens/05-donhang.js
+  js/screens/06-chitiet-donhang.js
+  js/screens/07-phanbo-nhamay.js
+  js/screens/08-vobao.js
+  js/screens/09-chuyentau.js
+  js/screens/10-phieusalan.js
+  js/screens/11-khvcnoidia.js
+  js/screens/12-auto-generated.js  Màn B1–B9 tự sinh (lớn)
+  js/screens/13-danhmuc-hethong-baocao.js
+  js/screens/14-hoso-lo-360.js
+  js/screens/15-vobao-360.js
+  js/screens/16-doichieu.js
+  js/screens/17-approval-inbox.js
+
+BUILD
+  node Main/build.mjs   → gộp lại ../index.html (file:// + screenshot)
+  npx serve Main        → dev với file tách
+
+GỢI Ý SỬA NHANH
+  Sidebar / menu / pin / tooltip  → js/nav/01-sidebar-config.js + css/02-sidebar.css
+  Tìm menu Ctrl+K                 → js/nav/02-nav-search.js
+  Dashboard KPI / pipeline        → js/screens/01-dashboard.js + html/pages/dashboard.html
+  Hợp đồng XK                     → js/screens/02-hopdong.js + html/pages/hopdong.html
+  Modal / openModal               → js/core/04-modal.js

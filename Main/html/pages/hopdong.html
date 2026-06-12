@@ -1,0 +1,106 @@
+<div class="page" data-page="hopdong">
+        <div class="phdr">
+          <div class="left">
+            <div class="eyebrow">DM_HOPDONG · DANH MỤC</div>
+            <h2>Hợp đồng — <b>Xuất khẩu / Nội địa / Dịch vụ</b></h2>
+            <p class="sub">Quản lý hợp đồng đầu ra: <b>xuất khẩu</b> với khách hàng <b>nước ngoài</b> (importer); <b>nội địa</b> với khách trong nước; <b>dịch vụ</b> với đối tác cung cấp dịch vụ.</p>
+          </div>
+          <div class="right">
+            <button class="tbtn"><i class="bi bi-plus-lg"></i> Tạo hợp đồng</button>
+            <div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+            <div class="ico" title="Bộ lọc"><i class="bi bi-funnel"></i></div>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="top"><div class="ic t"><i class="bi bi-file-earmark-text"></i></div><div class="lbl">Tổng hợp đồng</div></div>
+            <div class="val">47</div>
+            <div class="delta"><span class="chip up">+5</span>so với tháng trước · 3 loại HD</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic a"><i class="bi bi-currency-dollar"></i></div><div class="lbl">Tổng giá trị HD</div></div>
+            <div class="val">284.6<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">ty</span></div>
+            <div class="delta"><span class="chip up">+12.4%</span>so với T5 · XK chiem 62%</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic s"><i class="bi bi-clock-history"></i></div><div class="lbl">HD sap het han</div></div>
+            <div class="val">6 <span style="font-size:12px;color:var(--ink4);font-weight:400">HD</span></div>
+            <div class="delta"><span class="chip dn">3 HD</span>trong 30 ngày · cần gia hạn</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-pen"></i></div><div class="lbl">HD chờ ký duyệt</div></div>
+            <div class="val">4 <span style="font-size:12px;color:var(--ink4);font-weight:400">HD</span></div>
+            <div class="delta"><span class="chip eq">2 XK</span>· 1 ND · 1 DV</div>
+          </div>
+        </div>
+
+        <div class="hd-tabs" id="hd-tabs">
+          <button class="on" data-tab="xk">Xuất khẩu (XK) <span class="cnt">14</span></button>
+          <button data-tab="nd">Nội địa (ND) <span class="cnt">22</span></button>
+          <button data-tab="dv">Dịch vụ (DV) <span class="cnt">11</span></button>
+        </div>
+
+        <div class="hd-filters">
+          <div class="fgroup">
+            <label>Trạng thái:</label>
+            <select><option>Tất cả</option><option selected>Đang hiệu lực</option><option>Chờ ký</option><option>Sắp hết hạn</option><option>Hết hạn</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Khách hàng:</label>
+            <select><option>Tất cả</option><option>TCC — Đài Loan</option><option>CNBM — Trung Quốc</option><option>Republic Cement — Philippines</option><option>Green Island Cement — Hong Kong</option><option>SCG — Thái Lan</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Sản phẩm:</label>
+            <select><option>Tất cả</option><option>Clinker</option><option>Xi măng</option><option>Thạch cao</option></select>
+          </div>
+          <div class="fgroup" style="margin-left:auto">
+            <div class="search" style="max-width:220px">
+              <i class="bi bi-search si"></i>
+              <input placeholder="Tìm mã HD, khách hàng...">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chd">
+            <h3 id="hd-table-title">Hợp đồng xuất khẩu</h3>
+            <span class="small" id="hd-count">14 hợp đồng</span>
+            <div class="right">
+              <div class="seg">
+                <button class="on">Đang hiệu lực</button>
+                <button>Tất cả</button>
+                <button>Chờ ký</button>
+              </div>
+              <a class="cardlink">Xuat Excel <i class="bi bi-download"></i></a>
+            </div>
+          </div>
+          <div style="padding:0 4px 4px">
+            <table>
+              <thead>
+                <tr>
+                  <th style="padding-left:14px">Mã HD</th>
+                  <th>Khách hàng</th>
+                  <th>Sản phẩm</th>
+                  <th>KL hợp đồng</th>
+                  <th>Đã giao</th>
+                  <th>Giá trị</th>
+                  <th>Ngày ký</th>
+                  <th>Hiệu lực đến</th>
+                  <th style="padding-right:14px">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="hd-tbody"></tbody>
+            </table>
+          </div>
+          <div class="tfoot">
+            <span class="small" id="hd-footer">14 / 14 hợp đồng</span>
+            <div class="pg">
+              <button>&lsaquo;</button>
+              <button class="on">1</button>
+              <button>2</button>
+              <button>&rsaquo;</button>
+            </div>
+          </div>
+        </div>
+      </div><!-- end page hopdong -->

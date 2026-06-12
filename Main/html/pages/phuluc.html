@@ -1,0 +1,106 @@
+<div class="page" data-page="phuluc">
+        <div class="phdr">
+          <div class="left">
+            <div class="eyebrow">DM_PHULUC_HOPDONG · DANH MỤC</div>
+            <h2>Phụ lục hợp đồng — <b>Điều chỉnh & Bổ sung</b></h2>
+            <p class="sub">Quản lý phụ lục điều chỉnh giá, khối lượng, thời hạn và bổ sung điều khoản chờ hợp đồng xuất khẩu, nội địa và dịch vụ.</p>
+          </div>
+          <div class="right">
+            <button class="tbtn"><i class="bi bi-plus-lg"></i> Tạo phụ lục</button>
+            <div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+            <div class="ico" title="Bộ lọc"><i class="bi bi-funnel"></i></div>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="top"><div class="ic t"><i class="bi bi-file-earmark-plus"></i></div><div class="lbl">Tổng phụ lục</div></div>
+            <div class="val">23</div>
+            <div class="delta"><span class="chip up">+4</span>so với tháng trước · liên kết 18 hợp đồng</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic s"><i class="bi bi-check-circle"></i></div><div class="lbl">Đang hiệu lực</div></div>
+            <div class="val">16</div>
+            <div class="delta"><span class="chip up">+2</span>được duyệt trong tháng · 7 chờ xử lý</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic a"><i class="bi bi-clock-history"></i></div><div class="lbl">Chờ duyệt</div></div>
+            <div class="val">5</div>
+            <div class="delta"><span class="chip dn">2 khan</span>cần xử lý trong 24h</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-exclamation-diamond"></i></div><div class="lbl">Tổng giá trị thay đổi</div></div>
+            <div class="val">6.8<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">ty</span></div>
+            <div class="delta"><span class="chip up">+2.1 ty</span>tăng so với HD gốc · 3 PL giảm gia</div>
+          </div>
+        </div>
+
+        <div class="pl-tabs" id="pl-tabs">
+          <button class="on" data-tab="all">Tất cả <span class="cnt">23</span></button>
+          <button data-tab="xk">Xuất khẩu <span class="cnt">10</span></button>
+          <button data-tab="nd">Nội địa <span class="cnt">8</span></button>
+          <button data-tab="dv">Dịch vụ <span class="cnt">5</span></button>
+        </div>
+
+        <div class="hd-filters">
+          <div class="fgroup">
+            <label>Trạng thái</label>
+            <select><option>Tất cả</option><option>Đang hiệu lực</option><option>Chờ duyệt</option><option>Sắp hết hạn</option><option>Hết hiệu lực</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Loại thay đổi</label>
+            <select><option>Tất cả</option><option>Điều chỉnh giá</option><option>Điều chỉnh khối lượng</option><option>Gia hạn thời hạn</option><option>Bổ sung điều khoản</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Đối tác</label>
+            <select id="pl-filter-cust"><option>Tất cả</option></select>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chd">
+            <h3 id="pl-table-title">Phụ lục hợp đồng — Tất cả</h3>
+            <span class="small" id="pl-count">23 phụ lục</span>
+            <div class="right">
+              <div class="seg">
+                <button class="on">Gần đây</button>
+                <button>Giá trị</button>
+                <button>Trạng thái</button>
+              </div>
+            </div>
+          </div>
+          <div style="padding:0 4px 4px">
+            <table>
+              <thead>
+                <tr>
+                  <th style="padding-left:14px">Mã PL</th>
+                  <th>Hợp đồng</th>
+                  <th>Đối tác</th>
+                  <th>Loại thay đổi</th>
+                  <th>Giá trị cũ</th>
+                  <th>Giá trị mới</th>
+                  <th>Thay đổi</th>
+                  <th>Ngày ký</th>
+                  <th style="padding-right:14px">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="pl-tbody"></tbody>
+            </table>
+          </div>
+          <div class="tfoot">
+            <span class="small" id="pl-footer">23 / 23 phụ lục</span>
+            <div class="pg">
+              <button>&lsaquo;</button>
+              <button class="on">1</button>
+              <button>2</button>
+              <button>3</button>
+              <button>&rsaquo;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          Phụ lục hợp đồng là văn bản điều chỉnh, bổ sung hoặc gia hạn hợp đồng gốc. Sau khi duyệt, giá trị mới sẽ thay thế giá trị cũ trên hệ thống.
+          <b>Lưu ý:</b> Phụ lục chờ duyệt không ảnh hưởng đến giá trị hiện tại cua hợp đồng.
+        </div>
+      </div><!-- end page phuluc -->

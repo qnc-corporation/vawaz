@@ -1,0 +1,118 @@
+<div class="page" data-page="chitietdonhang">
+        <div class="phdr">
+          <div class="left">
+            <div class="eyebrow">GD_DONHANG_CHITIET · GIAO DICH</div>
+            <h2>Chi tiết đơn hàng</h2>
+            <p class="sub">Danh sách chi tiết từng dòng sản phẩm theo đơn hàng. Mỗi dong có ID chi tiết riêng, liên kết với mã đơn hàng và mã sản phẩm.</p>
+          </div>
+          <div class="right">
+            <button class="tbtn" id="ct-btn-back" style="background:var(--bg2);color:var(--ink3);border:1px solid var(--line)"><i class="bi bi-arrow-left"></i> Đơn hàng</button>
+            <button class="tbtn"><i class="bi bi-plus-lg"></i> Thêm mặt hàng</button>
+            <div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+          </div>
+        </div>
+
+        <div class="kpis" id="ct-kpis">
+          <div class="kpi">
+            <div class="top"><div class="ic t"><i class="bi bi-list-check"></i></div><div class="lbl">Tổng mặt hàng</div></div>
+            <div class="val" id="ct-kpi-total">86</div>
+            <div class="delta"><span class="chip up">+14</span>so với tháng trước · 47 đơn hàng</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic a"><i class="bi bi-check2-circle"></i></div><div class="lbl">Đã giao đủ</div></div>
+            <div class="val" id="ct-kpi-done">52</div>
+            <div class="delta"><span class="chip up">8 mat</span>hoàn thành hôm nay · 60% tổng số</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic s"><i class="bi bi-arrow-repeat"></i></div><div class="lbl">Đang giao</div></div>
+            <div class="val" id="ct-kpi-partial">19</div>
+            <div class="delta"><span class="chip eq">7 chờ NM</span>· 12 đã giao một phần</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-exclamation-circle"></i></div><div class="lbl">Chênh lệch KL</div></div>
+            <div class="val" id="ct-kpi-diff">4 <span style="font-size:12px;color:var(--ink4);font-weight:400">mặt hàng</span></div>
+            <div class="delta"><span class="chip dn">1.2%</span>chênh giữa giao và đặt · cần xử lý</div>
+          </div>
+        </div>
+
+        <div class="hd-tabs" id="ct-tabs">
+          <button class="on" data-tab="all">Tất cả <span class="cnt" id="ct-tab-cnt-all">86</span></button>
+          <button data-tab="danggiao">Đang giao <span class="cnt" id="ct-tab-cnt-danggiao">19</span></button>
+          <button data-tab="dagiao">Đã giao <span class="cnt" id="ct-tab-cnt-dagiao">52</span></button>
+          <button data-tab="chenh">Chênh lệch <span class="cnt" id="ct-tab-cnt-chenh">4</span></button>
+          <button data-tab="chophanbo">Chờ phân bổ <span class="cnt" id="ct-tab-cnt-chophanbo">11</span></button>
+        </div>
+
+        <div class="hd-filters">
+          <div class="fgroup">
+            <label>Đơn hàng</label>
+            <select id="ct-filter-dh"><option value="">Tất cả</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Sản phẩm</label>
+            <select id="ct-filter-sp"><option value="">Tất cả</option><option>Clinker</option><option>Xi măng PCB40</option><option>Xi măng</option><option>Thạch cao</option><option>Vận tải biển</option><option>Dịch vụ cảng</option><option>Giao nhận</option><option>Kiểm đếm</option><option>Chờ dỡ món</option><option>Dịch vụ phụ trợ</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Nhà máy</label>
+            <select id="ct-filter-nm"><option value="">Tất cả</option><option>NM Ha Long</option><option>NM Bim Son</option><option>NM Hoang Long</option><option>NM Mien Bac</option><option>NM Sai Gon</option></select>
+          </div>
+          <div class="fgroup" style="margin-left:auto">
+            <div class="search" style="max-width:260px">
+              <i class="bi bi-search si"></i>
+              <input id="ct-search" placeholder="Tìm ID chi tiết, mã DH, sản phẩm...">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chd">
+            <h3 id="ct-table-title">Chi tiết đơn hàng — Tất cả</h3>
+            <span class="small" id="ct-count">86 mặt hàng</span>
+            <div class="right">
+              <div class="seg">
+                <button class="on" data-sort="recent">Gần đây</button>
+                <button data-sort="kl">KL</button>
+                <button data-sort="tientien">Thành tiền</button>
+              </div>
+            </div>
+          </div>
+          <div style="padding:0 4px 4px">
+            <table>
+              <thead>
+                <tr>
+                  <th style="padding-left:14px">Mã chi tiết</th>
+                  <th>Mã đơn hàng</th>
+                  <th>Mã SP</th>
+                  <th>Sản phẩm</th>
+                  <th>Quy cách</th>
+                  <th>Nhà máy</th>
+                  <th>KL dat</th>
+                  <th>KL giao</th>
+                  <th>Tiến độ</th>
+                  <th>Đơn giá</th>
+                  <th>Thành tiền</th>
+                  <th style="padding-right:14px">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="ct-tbody"></tbody>
+            </table>
+          </div>
+          <div class="tfoot">
+            <span class="small" id="ct-footer">86 / 86 mặt hàng</span>
+            <div class="pg">
+              <button>&lsaquo;</button>
+              <button class="on">1</button>
+              <button>2</button>
+              <button>3</button>
+              <button>4</button>
+              <button>…</button>
+              <button>&rsaquo;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          Mỗi dòng sản phẩm có ID chi tiết riêng đang <b>CT-{Mã DH}-{STT}</b>, liên kết với mã đơn hàng và mã sản phẩm (<b>SP-CLK</b>, <b>SP-XM40</b>, <b>SP-XM</b>, <b>SP-TC</b>, ...). Click vào mã đơn hàng để xem chi tiết đơn hàng tương ứng.
+          <b>Lưu ý:</b> Mặt hàng chênh lệch (KL giao khac KL dat) se tự động được đánh dấu cần xử lý.
+        </div>
+      </div><!-- end page chitietdonhang -->

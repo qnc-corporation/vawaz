@@ -1,0 +1,118 @@
+<div class="page" data-page="khvcnoidia">
+        <div class="phdr">
+          <div class="left">
+            <div class="eyebrow">GD_LENH_VC · GIAO DICH</div>
+            <h2>Lệnh vận chuyển</h2>
+            <p class="sub">Quản lý lệnh vận chuyển nội địa bằng đường bộ — 3 nhóm: VC xi mang công ty đến công ty, VC vỏ bao công ty đến công ty, VC xi mang nhà máy ra cảng xếp. Mã vận chuyển (VC-PB-xxx) bám theo Mã phân bổ.</p>
+          </div>
+          <div class="right">
+            <button class="tbtn" id="db-btn-back" style="background:var(--bg2);color:var(--ink3);border:1px solid var(--line)"><i class="bi bi-arrow-left"></i> Kế hoạch tàu mẹ</button>
+            <button class="tbtn" style="background:var(--pri)"><i class="bi bi-plus-lg"></i> Tạo lenh</button>
+            <div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+          </div>
+        </div>
+
+        <!-- Sub-group selector: 3 nhóm van chuyển -->
+        <div class="db-sg-tabs" id="db-sg-tabs">
+          <button class="on" data-sg="xm_ctct"><i class="bi bi-building"></i> VC xi mang <small>CT &rarr; CT</small> <span class="cnt" id="db-sg-cnt-xm_ctct">0</span></button>
+          <button data-sg="vb_ctct"><i class="bi bi-box-seam"></i> VC vỏ bao <small>CT &rarr; CT</small> <span class="cnt" id="db-sg-cnt-vb_ctct">0</span></button>
+          <button data-sg="xm_nmcp"><i class="bi bi-anchor"></i> VC xi mang <small>NM &rarr; Cang</small> <span class="cnt" id="db-sg-cnt-xm_nmcp">0</span></button>
+        </div>
+
+        <div class="kpis" id="db-kpis">
+          <div class="kpi">
+            <div class="top"><div class="ic t"><i class="bi bi-truck"></i></div><div class="lbl">Tổng lenh</div></div>
+            <div class="val" id="db-kpi-total">0</div>
+            <div class="delta"><span class="chip eq">thang nay</span>3 lệnh mới</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic a"><i class="bi bi-check-circle"></i></div><div class="lbl">Đã giao</div></div>
+            <div class="val" id="db-kpi-done">0</div>
+            <div class="delta"><span class="chip up">hoan thanh</span>giao hàng thanh cong</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic s"><i class="bi bi-hourglass-split"></i></div><div class="lbl">Đang vận chuyển</div></div>
+            <div class="val" id="db-kpi-transit">0</div>
+            <div class="delta"><span class="chip dn">đang chạy</span>hang đang tren duong</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-clock-history"></i></div><div class="lbl">Chờ khoi hanh</div></div>
+            <div class="val" id="db-kpi-pending">0</div>
+            <div class="delta"><span class="chip dn">chờ xe</span>can xếp lịch xe</div>
+          </div>
+        </div>
+
+        <div class="hd-tabs" id="db-tabs">
+          <button class="on" data-tab="all">Tất cả <span class="cnt" id="db-tab-cnt-all">0</span></button>
+          <button data-tab="dagiao">Đã giao <span class="cnt" id="db-tab-cnt-dagiao">0</span></button>
+          <button data-tab="dangvc">Đang vận chuyển <span class="cnt" id="db-tab-cnt-dangvc">0</span></button>
+          <button data-tab="chokhoihanh">Chờ khoi hanh <span class="cnt" id="db-tab-cnt-chokhoihanh">0</span></button>
+        </div>
+
+        <div class="hd-filters">
+          <div class="fgroup">
+            <label>Tuyến</label>
+            <select id="db-filter-tuyen"><option value="">Tất cả</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Don vi VC</label>
+            <select id="db-filter-dvvc"><option value="">Tất cả</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Trạng thái</label>
+            <select id="db-filter-status"><option value="">Tất cả</option><option>Đã giao</option><option>Đang vận chuyển</option><option>Chờ khoi hanh</option></select>
+          </div>
+          <div class="fgroup" style="margin-left:auto">
+            <div class="search" style="max-width:260px">
+              <i class="bi bi-search si"></i>
+              <input id="db-search" placeholder="Tìm mã VC, mã PB, xe, tuyến...">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chd">
+            <h3 id="db-table-title">Lệnh vận chuyển — Tất cả</h3>
+            <span class="small" id="db-count">0 dong</span>
+            <div class="right">
+              <div class="seg">
+                <button class="on" data-sort="recent">Gần đây</button>
+                <button data-sort="kl">KL</button>
+              </div>
+            </div>
+          </div>
+          <div style="padding:0 4px 4px">
+            <table>
+              <thead>
+                <tr>
+                  <th style="padding-left:14px">Ma vận chuyển</th>
+                  <th>Mã phân bổ</th>
+                  <th>Tuyến</th>
+                  <th>Don vi VC</th>
+                  <th>Xe</th>
+                  <th>Tai xe</th>
+                  <th>Sản phẩm</th>
+                  <th>KL (tan)</th>
+                  <th>Ngày giao</th>
+                  <th>Đơn hàng</th>
+                  <th style="padding-right:14px">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="db-tbody"></tbody>
+            </table>
+          </div>
+          <div class="tfoot">
+            <span class="small" id="db-footer">0 dong</span>
+            <div class="pg">
+              <button>&lsaquo;</button>
+              <button class="on">1</button>
+              <button>2</button>
+              <button>&rsaquo;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          Mã vận chuyển <b>VC-PB-xxxx-xx</b> bám theo Mã phân bổ <b>PB-xxxx-xx</b>, thể hiện mới liên kết 1:1 giữa lệnh vận chuyển và phân bổ nguồn. Lệnh gồm 3 nhóm: <b>VC xi mang CT&rarr;CT</b> (vận chuyển xi măng giữa các công ty), <b>VC vỏ bao CT&rarr;CT</b> (luân chuyển vỏ bao giữa các công ty), <b>VC xi mang NM&rarr;Cảng</b> (vận chuyển xi măng từ nhà máy ra cảng xếp hàng). Click vào Mã phân bổ để xem chi tiết phân bổ tương ứng.
+        </div>
+      </div><!-- end page khvcnoidia -->

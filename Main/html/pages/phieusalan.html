@@ -1,0 +1,109 @@
+<div class="page" data-page="phieusalan">
+        <div class="phdr">
+          <div class="left">
+            <div class="eyebrow">GD_DIEUDO_SALAN · GIAO DICH</div>
+            <h2>Điều độ sà lan</h2>
+            <p class="sub">Quản lý điều độ sà lan nhập hàng hóa. Theo dõi khối lượng nhập theo từng sà lan, bờ neo, sản phẩm và trạng thái nhập hàng.</p>
+          </div>
+          <div class="right">
+            <button class="tbtn" id="psl-btn-back" style="background:var(--bg2);color:var(--ink3);border:1px solid var(--line)"><i class="bi bi-arrow-left"></i> Kế hoạch tàu mẹ</button>
+            <button class="tbtn" style="background:var(--pri)"><i class="bi bi-plus-lg"></i> Tạo điều độ</button>
+            <div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+          </div>
+        </div>
+
+        <div class="kpis" id="psl-kpis">
+          <div class="kpi">
+            <div class="top"><div class="ic t"><i class="bi bi-water"></i></div><div class="lbl">Tổng điều độ</div></div>
+            <div class="val" id="psl-kpi-total">0</div>
+            <div class="delta"><span class="chip eq">thang nay</span>4 điều độ mới</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic a"><i class="bi bi-check-circle"></i></div><div class="lbl">Da nhap</div></div>
+            <div class="val" id="psl-kpi-done">0</div>
+            <div class="delta"><span class="chip up">hoan thanh</span>nhập hàng thanh cong</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic s"><i class="bi bi-hourglass-split"></i></div><div class="lbl">Đang nhập</div></div>
+            <div class="val" id="psl-kpi-loading">0</div>
+            <div class="delta"><span class="chip dn">đang nhập</span>hang đang được xếp lên sà lan</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-clock-history"></i></div><div class="lbl">Chờ nhập</div></div>
+            <div class="val" id="psl-kpi-pending">0</div>
+            <div class="delta"><span class="chip dn">chờ xếp hàng</span>can lên lịch nhap</div>
+          </div>
+        </div>
+
+        <div class="hd-tabs" id="psl-tabs">
+          <button class="on" data-tab="all">Tất cả <span class="cnt" id="psl-tab-cnt-all">0</span></button>
+          <button data-tab="danhap">Da nhập <span class="cnt" id="psl-tab-cnt-danhap">0</span></button>
+          <button data-tab="dangnhap">Đang nhập <span class="cnt" id="psl-tab-cnt-dangnhap">0</span></button>
+          <button data-tab="chonhap">Chờ nhập <span class="cnt" id="psl-tab-cnt-chonhap">0</span></button>
+        </div>
+
+        <div class="hd-filters">
+          <div class="fgroup">
+            <label>Sà lan</label>
+            <select id="psl-filter-salan"><option value="">Tất cả</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Bo neo</label>
+            <select id="psl-filter-ben"><option value="">Tất cả</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Trạng thái</label>
+            <select id="psl-filter-status"><option value="">Tất cả</option><option>Da nhap</option><option>Đang nhập</option><option>Chờ nhập</option></select>
+          </div>
+          <div class="fgroup" style="margin-left:auto">
+            <div class="search" style="max-width:260px">
+              <i class="bi bi-search si"></i>
+              <input id="psl-search" placeholder="Tìm mã phiếu, sà lan, sản phẩm...">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chd">
+            <h3 id="psl-table-title">Điều độ sà lan — Tất cả</h3>
+            <span class="small" id="psl-count">0 dong</span>
+            <div class="right">
+              <div class="seg">
+                <button class="on" data-sort="recent">Gần đây</button>
+                <button data-sort="kl">KL nhập</button>
+              </div>
+            </div>
+          </div>
+          <div style="padding:0 4px 4px">
+            <table>
+              <thead>
+                <tr>
+                  <th style="padding-left:14px">Mã phiếu</th>
+                  <th>Sà lan</th>
+                  <th>Bo neo</th>
+                  <th>Sản phẩm</th>
+                  <th>So lô xuất</th>
+                  <th>KL nhập (tan)</th>
+                  <th>Ngày nhap</th>
+                  <th>Đơn hàng</th>
+                  <th style="padding-right:14px">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="psl-tbody"></tbody>
+            </table>
+          </div>
+          <div class="tfoot">
+            <span class="small" id="psl-footer">0 dong</span>
+            <div class="pg">
+              <button>&lsaquo;</button>
+              <button class="on">1</button>
+              <button>2</button>
+              <button>&rsaquo;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          Điều độ sà lan ghi nhận sản lượng nhập hàng lên sà lan tại bờ neo. Mỗi điều độ liên kết với <b>lô xuất</b> và <b>đơn hàng</b> tương ứng. Điều độ <b>Chờ nhập</b> cần được xếp lịch sà lan và bờ neo. Sử dụng <b>Tạo điều độ</b> để tạo mới điều độ nhập hàng.
+        </div>
+      </div><!-- end page phieusalan -->

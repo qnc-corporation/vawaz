@@ -1,0 +1,299 @@
+<div class="page active" data-page="dashboard">
+      <!-- Page header -->
+      <div class="phdr">
+        <div class="left">
+          <div class="eyebrow">DASHBOARD · CAP NHAT 08:42</div>
+          <h2>Chào buổi sáng, An — hôm nay có <b>4</b> cảnh báo cần xử lý</h2>
+          <p class="sub">Theo dõi 8 chặng của lộ trình đơn hàng, từ ký hợp đồng đến thu hồi công nợ. Bấm vào chặng để xem các đơn đang ở giai đoạn đó.</p>
+        </div>
+        <div class="right">
+          <div class="seg">
+            <button>Hôm nay</button>
+            <button>Tuần này</button>
+            <button class="on">Tháng 6</button>
+            <button>Quy</button>
+          </div>
+          <div class="density-sel">
+            <span>Mật độ:</span>
+            <button data-d="compact" class="on">Dày</button>
+            <button data-d="comfortable">Thoải mái</button>
+            <button data-d="spacious">Rộng</button>
+          </div>
+          <div class="ico" title="Tùy chỉnh widget"><i class="bi bi-sliders"></i></div>
+          <div class="ico" title="Xuất dữ liệu"><i class="bi bi-download"></i></div>
+        </div>
+      </div>
+
+      <!-- Journey strip -->
+      <div class="journey">
+        <div class="jt">
+          <h3>Lộ trình đơn hàng · 8 chặng</h3>
+          <div class="meta">
+            <span class="pill">47 đơn đang chạy</span>
+            <span>Tổng giá trị: <b style="color:var(--ink)">38.2 ty VND</b></span>
+            <span style="color:var(--ink4)">·</span>
+            <span>Chặng HOT: <b style="color:var(--acc)">Làm hàng</b></span>
+          </div>
+        </div>
+        <div class="flow" id="flow"></div>
+      </div>
+
+      <!-- KPI cards -->
+      <div class="kpis" id="dash-kpis">
+        <div class="kpi" data-go="donhang" title="Mở danh sách đơn hàng">
+          <div class="top">
+            <div class="ic t"><i class="bi bi-box-seam"></i></div>
+            <div class="lbl">Đơn hàng đang xử lý</div>
+          </div>
+          <div class="val">47</div>
+          <div class="delta"><span class="chip up">+8</span>so với tuần trước · 12 đơn mới</div>
+        </div>
+        <div class="kpi" data-go="baocao:dongtien,lailo" title="Mở báo cáo dòng tiền">
+          <div class="top">
+            <div class="ic a"><i class="bi bi-currency-dollar"></i></div>
+            <div class="lbl">Doanh thu tháng 6</div>
+          </div>
+          <div class="val">12.4<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">ty</span></div>
+          <div class="delta"><span class="chip up">+15.2%</span>so với T5 · đạt 82% KH</div>
+        </div>
+        <div class="kpi" data-go="canhbao" title="Mở trang cảnh báo công nợ">
+          <div class="top">
+            <div class="ic s"><i class="bi bi-graph-up-arrow"></i></div>
+            <div class="lbl">Công nợ phải thu</div>
+          </div>
+          <div class="val">8.7<span style="font-size:12px;color:var(--ink4);font-weight:400;margin-left:3px">ty</span></div>
+          <div class="delta"><span class="chip dn">3 đơn</span>quá hạn · 2.1 ty cần thu hồi</div>
+        </div>
+        <div class="kpi" data-go="chuyentau" title="Mở kế hoạch tàu mẹ">
+          <div class="top">
+            <div class="ic h"><i class="bi bi-water"></i></div>
+            <div class="lbl">Tàu đang neo</div>
+          </div>
+          <div class="val">4 <span style="font-size:12px;color:var(--ink4);font-weight:400">tàu</span> · <span style="color:var(--acc);font-size:16px;font-weight:700;margin-left:1px">1</span><span style="font-size:var(--fs2);color:var(--ink4);font-weight:400;margin-left:2px">chờ dỡ món</span></div>
+          <div class="delta"><span class="chip eq">2 lo</span>đang xếp · 1 lo chờ hải quan</div>
+        </div>
+      </div>
+
+      <!-- Main grid -->
+      <div class="grid">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <!-- Pipeline -->
+          <div class="card">
+            <div class="chd">
+              <h3>Pipeline đơn hàng theo chặng</h3>
+              <span class="small" style="color:var(--ink4)" id="pipe-hint">Bấm chặng để lọc bảng đơn · bấm lại để bỏ lọc</span>
+              <div class="right">
+                <div class="seg">
+                  <button class="on">Số đơn</button>
+                  <button>Giá trị</button>
+                </div>
+                <a class="cardlink">Mở rộng <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+            <div class="cbody">
+              <div class="pipeline" id="pipeline"></div>
+            </div>
+          </div>
+
+          <!-- Orders table -->
+          <div class="card">
+            <div class="chd">
+              <h3>Đơn hàng ưu tiên · cần theo dõi</h3>
+              <span class="small" id="dash-orders-meta">8/47 đơn · sắp xếp theo deadline</span>
+              <div class="right">
+                <div class="seg">
+                  <button class="on">Tất cả</button>
+                  <button>Trễ hạn</button>
+                  <button>SLA &lt; 24h</button>
+                </div>
+                <a class="cardlink">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+            <div style="padding:0 4px 4px">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="padding-left:14px">Mã DH</th>
+                    <th>Khách hàng</th>
+                    <th>Sản phẩm</th>
+                    <th>Chặng</th>
+                    <th>SLA</th>
+                    <th>Giá trị</th>
+                    <th style="padding-right:14px">Cập nhật</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+              </table>
+            </div>
+            <div class="tfoot">
+              <span class="small">8 / 47 đơn</span>
+              <div class="pg">
+                <button>&lsaquo;</button>
+                <button class="on">1</button>
+                <button>2</button>
+                <button>3</button>
+                <button>4</button>
+                <button>…</button>
+                <button>&rsaquo;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-r">
+          <!-- Quick stats -->
+          <div class="card">
+            <div class="chd">
+              <h3>Hoạt động hôm nay</h3>
+              <span class="small">02/06/2026</span>
+            </div>
+            <div class="cbody">
+              <div class="qs">
+                <div class="q">
+                  <div class="l">Phiếu sà lan</div>
+                  <div class="v">23 <small>tan</small><span class="pos">+12</span></div>
+                </div>
+                <div class="q">
+                  <div class="l">Tờ khai HQ</div>
+                  <div class="v">8 <small>lo</small><span class="pos">+3</span></div>
+                </div>
+                <div class="q">
+                  <div class="l">Hóa đơn</div>
+                  <div class="v">14 <small>ty</small><span class="pos">+2.1</span></div>
+                </div>
+                <div class="q">
+                  <div class="l">Thanh toán</div>
+                  <div class="v">6.4 <small>ty</small><span class="neg">-0.8</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mix ring -->
+          <div class="card">
+            <div class="chd">
+              <h3>Cơ cấu sản phẩm</h3>
+              <span class="small">Tháng 6</span>
+            </div>
+            <div class="cbody">
+              <div class="ring-row">
+                <div class="ring">
+                  <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#E2E4E8" stroke-width="10"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#04589C" stroke-width="10" stroke-dasharray="131.9 263.9" stroke-linecap="butt"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#0D9E5F" stroke-width="10" stroke-dasharray="66 263.9" stroke-dashoffset="-131.9" stroke-linecap="butt"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#F5821F" stroke-width="10" stroke-dasharray="39.6 263.9" stroke-dashoffset="-197.9" stroke-linecap="butt"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#7C3AED" stroke-width="10" stroke-dasharray="26.4 263.9" stroke-dashoffset="-237.5" stroke-linecap="butt"/>
+                  </svg>
+                  <div class="num"><b>47</b><small>DON</small></div>
+                </div>
+                <div class="ring-legend">
+                  <div class="legend-item"><span class="sw" style="background:#04589C"></span><span class="nm">Clinker</span><span class="vl">50%</span></div>
+                  <div class="legend-item"><span class="sw" style="background:#0D9E5F"></span><span class="nm">Xi măng</span><span class="vl">25%</span></div>
+                  <div class="legend-item"><span class="sw" style="background:#F5821F"></span><span class="nm">Thạch cao</span><span class="vl">15%</span></div>
+                  <div class="legend-item"><span class="sw" style="background:#7C3AED"></span><span class="nm">Khác</span><span class="vl">10%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts -->
+          <div class="card">
+            <div class="chd">
+              <h3>Cảnh báo & việc cần làm</h3>
+              <span class="small" style="color:var(--err)">4 mới</span>
+              <div class="right">
+                <a class="cardlink">Tất cả <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+            <div class="cbody">
+              <div class="al">
+                <div class="ai hot"><i class="bi bi-exclamation-triangle"></i></div>
+                <div class="at">
+                  <div class="tl">Công nợ <b>DH-2026-0312</b> quá hạn 18 ngày</div>
+                  <div class="desc">Importer <b>TCC — Đài Loan</b> · còn <b>680 triệu</b>. Cần lên DNTT hoặc gửi nhắc nợ.</div>
+                  <div class="ago">12 phút trước<span class="sep"></span>GD_CONGNO</div>
+                </div>
+              </div>
+              <div class="al">
+                <div class="ai amb"><i class="bi bi-clock"></i></div>
+                <div class="at">
+                  <div class="tl">Tàu <b>VINASHIN STAR</b> chờ dỡ món từ 05:00</div>
+                  <div class="desc">Neo tại Cái Lân · NOR gửi 04:30 · chưa có kết quả dỡ.</div>
+                  <div class="ago">38 phút trước<span class="sep"></span>GD_DOMON</div>
+                </div>
+              </div>
+              <div class="al">
+                <div class="ai tl"><i class="bi bi-check-circle"></i></div>
+                <div class="at">
+                  <div class="tl">Tờ khai <b>TK-2026-0817</b> đã được duyệt</div>
+                  <div class="desc">Lo Clinker chờ Xi măng Hạ Long · 5,200 tấn · có thể xếp hàng.</div>
+                  <div class="ago">1 giờ trước<span class="sep"></span>GD_TOKHAI</div>
+                </div>
+              </div>
+              <div class="al">
+                <div class="ai st"><i class="bi bi-info-circle"></i></div>
+                <div class="at">
+                  <div class="tl">Phân bổ <b>DH-2026-0319</b> chờ nhà máy Bim Sơn</div>
+                  <div class="desc">Đã phân bổ 3,200/5,000 tấn · con 1,800 tấn cần điều chỉnh.</div>
+                  <div class="ago">2 giờ trước<span class="sep"></span>GD_DONHANG</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity -->
+          <div class="card">
+            <div class="chd">
+              <h3>Hoạt động gần đây</h3>
+              <span class="small">Hôm nay</span>
+              <div class="right">
+                <a class="cardlink">Tất cả <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+            <div class="cbody">
+              <div class="ac">
+                <div class="dotc t"><i class="bi bi-check2" style="font-size:12px"></i></div>
+                <div class="acb">
+                  <div class="at2"><b>Nguyễn An</b> cập nhật sản lượng <span class="ord">DH-2026-0319</span></div>
+                  <div class="ago">5 phút trước</div>
+                </div>
+              </div>
+              <div class="ac">
+                <div class="dotc a"><i class="bi bi-pencil" style="font-size:11px"></i></div>
+                <div class="acb">
+                  <div class="at2"><b>Trần Bình</b> sửa phiếu cân <span class="ord">PC-2026-0442</span></div>
+                  <div class="ago">18 phút trước</div>
+                </div>
+              </div>
+              <div class="ac">
+                <div class="dotc h"><i class="bi bi-exclamation" style="font-size:12px"></i></div>
+                <div class="acb">
+                  <div class="at2">Hệ thống cảnh báo công nợ <span class="ord">DH-2026-0312</span> quá hạn</div>
+                  <div class="ago">42 phút trước</div>
+                </div>
+              </div>
+              <div class="ac">
+                <div class="dotc s"><i class="bi bi-upload" style="font-size:11px"></i></div>
+                <div class="acb">
+                  <div class="at2"><b>Lê Minh</b> tải lên tờ khai <span class="ord">TK-2026-0817</span></div>
+                  <div class="ago">1 giờ trước</div>
+                </div>
+              </div>
+              <div class="ac">
+                <div class="dotc v"><i class="bi bi-arrow-left-right" style="font-size:11px"></i></div>
+                <div class="acb">
+                  <div class="at2"><b>Phạm Đức</b> điều chuyển vỏ bao từ NM Ha Long → NM Bim Son</div>
+                  <div class="ago">2 giờ trước</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        Phím tắt: <span class="kbd">Ctrl K</span> tìm kiếm · <span class="kbd">Ctrl N</span> tạo mới · <span class="kbd">Ctrl J</span> nhật ký.
+        Dữ liệu cập nhật tự động mỗi 30 giây. <b>QNC ERP v7.2</b> — hàng hóa & vận tải.
+      </div>
+      </div><!-- end page dashboard -->

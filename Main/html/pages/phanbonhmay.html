@@ -1,0 +1,127 @@
+<div class="page" data-page="phanbonhmay">
+        <div class="phdr">
+          <div class="left">
+            <div class="eyebrow">GD_PHANBO_NHAMAY · GIAO DICH</div>
+            <h2>Phân bổ nguồn nhà máy</h2>
+            <p class="sub">Phân bổ khối lượng đơn hàng chờ các nhà máy theo nguồn cung ứng. Theo dõi tiến độ phân bổ, nhà máy đã nhận và khối lượng còn lại cần điều chỉnh.</p>
+          </div>
+          <div class="right">
+            <button class="tbtn" id="pb-btn-back" style="background:var(--bg2);color:var(--ink3);border:1px solid var(--line)"><i class="bi bi-arrow-left"></i> Đơn hàng</button>
+            <button class="tbtn" style="background:var(--pri)"><i class="bi bi-plus-lg"></i> Phân bổ mới</button>
+            <button class="tbtn" id="pb-btn-auto" style="background:var(--bg2);color:var(--ink3);border:1px solid var(--line)"><i class="bi bi-magic"></i> Tự động PB</button>
+            <div class="ico" title="Xuat Excel"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+          </div>
+        </div>
+
+        <div class="kpis" id="pb-kpis">
+          <div class="kpi">
+            <div class="top"><div class="ic t"><i class="bi bi-building"></i></div><div class="lbl">Nhà máy đang phân bổ</div></div>
+            <div class="val" id="pb-kpi-nm">5</div>
+            <div class="delta"><span class="chip eq">5 NM</span>hoạt động · 2 chờ lệnh mới</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic a"><i class="bi bi-check2-all"></i></div><div class="lbl">Đã phân bổ đủ</div></div>
+            <div class="val" id="pb-kpi-done">52</div>
+            <div class="delta"><span class="chip up">5 lenh</span>hoàn thành hôm nay</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic s"><i class="bi bi-hourglass-split"></i></div><div class="lbl">Chờ phân bổ</div></div>
+            <div class="val" id="pb-kpi-wait">11</div>
+            <div class="delta"><span class="chip dn">11 đơn</span>chưa có nhà máy · ưu tiên cao</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic h"><i class="bi bi-exclamation-triangle"></i></div><div class="lbl">Chênh lệch phân bổ</div></div>
+            <div class="val" id="pb-kpi-diff">4</div>
+            <div class="delta"><span class="chip dn">1.2%</span>lệch giữa đặt và phân bổ</div>
+          </div>
+        </div>
+
+        <div class="hd-tabs" id="pb-tabs">
+          <button class="on" data-tab="all">Tất cả <span class="cnt" id="pb-tab-cnt-all">86</span></button>
+          <button data-tab="dangphanbo">Đang phân bổ <span class="cnt" id="pb-tab-cnt-dangphanbo">19</span></button>
+          <button data-tab="daphanbo">Đã phân bổ đủ <span class="cnt" id="pb-tab-cnt-daphanbo">52</span></button>
+          <button data-tab="chenhpb">Chênh lệch <span class="cnt" id="pb-tab-cnt-chenhpb">4</span></button>
+          <button data-tab="chophanbo">Chờ phân bổ <span class="cnt" id="pb-tab-cnt-chophanbo">11</span></button>
+        </div>
+
+        <!-- Bulk actions bar -->
+        <div class="hd-filters" id="pb-bulk-bar" style="display:none;background:var(--pri3);border:1px solid var(--pri4);border-radius:4px;margin-bottom:8px;padding:6px 12px;align-items:center;gap:10px">
+          <span style="font-size:var(--fs3);color:var(--pri);font-weight:600" id="pb-selected-count">0 dòng chọn</span>
+          <button class="tbtn" style="height:26px;font-size:var(--fs3);background:var(--pri);color:#fff"><i class="bi bi-arrow-left-right"></i> Chuyen NM</button>
+          <button class="tbtn" style="height:26px;font-size:var(--fs3)"><i class="bi bi-pencil"></i> Sửa KL</button>
+          <button class="tbtn" style="height:26px;font-size:var(--fs3)"><i class="bi bi-trash3"></i> Hủy PB</button>
+          <button class="tbtn" style="height:26px;font-size:var(--fs3);margin-left:auto" id="pb-clear-sel"><i class="bi bi-x-lg"></i> Bo chon</button>
+        </div>
+
+        <div class="hd-filters">
+          <div class="fgroup">
+            <label>Đơn hàng</label>
+            <select id="pb-filter-dh"><option value="">Tất cả</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Nhà máy</label>
+            <select id="pb-filter-nm"><option value="">Tất cả</option><option>NM Ha Long</option><option>NM Bim Son</option><option>NM Hoang Long</option><option>NM Mien Bac</option><option>NM Sai Gon</option></select>
+          </div>
+          <div class="fgroup">
+            <label>Sản phẩm</label>
+            <select id="pb-filter-sp"><option value="">Tất cả</option><option>Clinker</option><option>Xi măng</option><option>Xi măng PCB40</option><option>Thạch cao</option></select>
+          </div>
+          <div class="fgroup" style="margin-left:auto">
+            <div class="search" style="max-width:260px">
+              <i class="bi bi-search si"></i>
+              <input id="pb-search" placeholder="Tìm mã DH, nhà máy, sản phẩm...">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="chd">
+            <h3 id="pb-table-title">Phân bổ nguồn nhà máy — Tất cả</h3>
+            <span class="small" id="pb-count">86 dong</span>
+            <div class="right">
+              <div class="seg">
+                <button class="on" data-sort="recent">Gần đây</button>
+                <button data-sort="kl">KL</button>
+              </div>
+            </div>
+          </div>
+          <div style="padding:0 4px 4px">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:30px;padding-left:14px"><input type="checkbox" id="pb-select-all" style="accent-color:var(--pri)"></th>
+                  <th>Mã phân bổ</th>
+                  <th>Mã chi tiết</th>
+                  <th>Mã đơn hàng</th>
+                  <th>Sản phẩm</th>
+                  <th>Nhà máy</th>
+                  <th>KL dat</th>
+                  <th>KL phân bổ</th>
+                  <th>Tiến độ phân bổ</th>
+                  <th>Đơn giá</th>
+                  <th>Thành tiền</th>
+                  <th>Trạng thái</th>
+                  <th style="padding-right:14px;text-align:center">Thao tac</th>
+                </tr>
+              </thead>
+              <tbody id="pb-tbody"></tbody>
+            </table>
+          </div>
+          <div class="tfoot">
+            <span class="small" id="pb-footer">86 / 86 dong</span>
+            <div class="pg">
+              <button>&lsaquo;</button>
+              <button class="on">1</button>
+              <button>2</button>
+              <button>3</button>
+              <button>4</button>
+              <button>…</button>
+              <button>&rsaquo;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          Trang phân bổ nguồn nhà máy giúp theo dõi việc chia khối lượng đơn hàng chờ từng nhà máy cung ứng. Mỗi phân bổ có <b>Mã phân bổ</b> (PB-xxx-xx) và liên kết với <b>Mã chi tiết</b> (CT-xxx-xx) tương ứng. Click vào dòng để xem chi tiết phân bổ và tiến trình kế thừa: <b>Tiến trình chính</b> Hợp đồng → Đơn hàng → Chi tiết → Phân bổ; <b>Tiến trình phu</b> (Phụ lục hợp đồng) hiển thị bên dưới. Đơn hàng <b>Chờ phân bổ</b> chưa được gán nhà máy và cần xử lý ưu tiên. Đơn hàng <b>Chênh lệch</b> có su khác biệt giữa khối lượng đặt và khối lượng thực tế phân bổ. Sử dụng <b>Tự động PB</b> để hệ thống tự động chia khối lượng theo công suất nhà máy.
+        </div>
+      </div><!-- end page phanbonhmay -->

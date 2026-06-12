@@ -1,0 +1,34 @@
+:root{
+  /* Primary & Accent */
+  --pri:#04589C; --pri2:#03477D; --pri3:#E8F1F9; --pri4:#D0E4F5;
+  --acc:#F5821F; --acc2:#D96E12; --acc3:#FEF3E8; --acc4:#FDDDB8;
+  /* Neutral */
+  --bg:#FFFFFF; --bg2:#F8F9FA; --bg3:#F1F3F5; --bg4:#E9ECEF;
+  --ink:#1A1A2E; --ink2:#3D3D56; --ink3:#6B6B85; --ink4:#9B9BB0;
+  --line:#E2E4E8; --line2:#D0D3D9; --line3:#B8BBC2;
+  /* Semantic */
+  --ok:#0D9E5F; --ok2:#E6F7EE; --err:#D63031; --err2:#FDE8E8;
+  --warn:#F5821F; --warn2:#FEF3E8; --info:#04589C; --info2:#E8F1F9;
+  /* Fonts */
+  --sans:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  /* Density — overridden by JS */
+  --fs:12px; --lh:1.5; --rh:32px; --gap:12px; --pad:12px;
+  --fs2:11px; --fs3:10px;
+}
+[data-density="compact"]{ --fs:11px; --lh:1.4; --rh:28px; --gap:8px; --pad:8px; --fs2:10px; --fs3:9px; }
+[data-density="comfortable"]{ --fs:12.5px; --lh:1.55; --rh:36px; --gap:14px; --pad:14px; --fs2:11.5px; --fs3:10.5px; }
+[data-density="spacious"]{ --fs:13.5px; --lh:1.6; --rh:40px; --gap:16px; --pad:16px; --fs2:12px; --fs3:11px; }
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg2);color:var(--ink);font-family:var(--sans);font-size:var(--fs);
+  line-height:var(--lh);display:flex;overflow:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input{font:inherit;color:inherit}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--line3)}
